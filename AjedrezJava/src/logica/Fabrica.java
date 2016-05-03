@@ -4,6 +4,9 @@ public class Fabrica {
 	
 	private static Fabrica fabrica;
 	
+	/*
+	 * Patrón método fábrica.
+	 */
 	public Pieza crearPieza(String p, Jugador j) {
 		p = p.toLowerCase();
 		if (p.equals("alfil")) return new Alfil(j);
@@ -15,6 +18,9 @@ public class Fabrica {
 		return null;
 	}
 	
+	/*
+	 * Patrón singleton.
+	 */
 	public static Fabrica getSingleton() {
 		if(fabrica == null) fabrica = new Fabrica();
 		return fabrica;
