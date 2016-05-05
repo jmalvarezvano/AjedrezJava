@@ -4,9 +4,9 @@ public class Mediador {
 	private Tablero tablero;
 	private Jugador jugador1;
 	private Jugador jugador2;
-	
+
 	public Mediador() {
-		
+
 	}
 
 	public Tablero getTablero() {
@@ -42,19 +42,19 @@ public class Mediador {
 		} catch(Exception e) {return false;}		
 		if (origen.getPieza() == null || !origen.getPieza().getJugador().equals(j)) return false;
 		if (destino.getPieza().getJugador().equals(j)) return false;
-		if (movimientoValido(origenX, origenY, destinoX, destinoY, origen.getPieza().getMovimiento()) {
+		if (movimientoValido(origenX, origenY, destinoX, destinoY, origen.getPieza().getMovimiento())) {
 				destino.setPieza(origen.getPieza());
 				return true;
 		}		
 		return false;
 	}
-	
+
 	public boolean movimientoValido(int origenX, int origenY, int destinoX, int destinoY, String movimiento) {
-		int xRelativo = destinoX - origenX;
-		int yRelativo = destinoY - origenY;
+		int xRelativo = Math.abs(destinoX - origenX);
+		int yRelativo = Math.abs(destinoY - origenY);
 		switch (movimiento) {
 		case "alfil": 
-			if(Math.abs(xRelativo) == Math.abs(yRelativo)){
+			if(xRelativo == yRelativo) {
 				for(int x = origenX + 1, y = origenY + 1; x < destinoX && y < destinoY; x++, y++) {
 					if(tablero.getCelda(x, y).getPieza() != null) return false;
 				}
@@ -62,10 +62,49 @@ public class Mediador {
 			}
 			break;
 		case "caballo":
-			if(Math.abs(xRelativo) 
+			if((xRelativo == 1 && yRelativo == 2) || (xRelativo == 2 && yRelativo == 1)) return true;
+			break;
+		case "peonPrimerMovimiento":
+			if(xRelativo == 0) 
+				if(yRelativo == 1) return true;
+				else return (yRelativo == 2 && tablero.getCelda(origenX, origenY + 1).getPieza() == null);
+			else return (xRelativo == 1 && tablero.getCelda(destinoX, destinoY).getPieza() != null);
+		case "peon":
+			if(xRelativo == 0 && yRelativo == 1) return true;
+		case "reina":
+			//torre
+			if(xRelativo == 0) {
+				for(int y = origenY + 1; y < destinoY; y++) 
+					if(tablero.getCelda(0, y).getPieza() != null) return false;
+				return true;
+			}
+			else if(yRelativo == 0) {
+				for(int y = origenY + 1; y < destinoY; y++) 
+					if(tablero.getCelda(0, y).getPieza() != null) return false;
+				return true;
+			}		
+			//alfil
+			if(xRelativo == yRelativo) {
+				for(int x = origenX + 1, y = origenY + 1; x < destinoX && y < destinoY; x++, y++) 
+					if(tablero.getCelda(x, y).getPieza() != null) return false;				
+				return true;
+			}			
+			break;
+		case "rey":
+			if(xRelativo <= 1 && yRelativo <= 1) return true;
+			break;
+		case "torre":
+			if(xRelativo == 0) {
+				for(int y = origenY + 1; y < destinoY; y++) 
+					if(tablero.getCelda(0, y).getPieza() != null) return false;
+				return true;
+			}
+			else if(yRelativo == 0) {
+				for(int y = origenY + 1; y < destinoY; y++) 
+					if(tablero.getCelda(0, y).getPieza() != null) return false;
+				return true;
+			}
 		}
 		return false;
 	}
-	
-	
 }
