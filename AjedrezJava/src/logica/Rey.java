@@ -12,7 +12,7 @@ public class Rey extends Pieza {
 	}
 
 	public Rey(Jugador j) {
-		super(j);
+		super(j, "rey");
 		jaque = false;
 		// TODO Auto-generated constructor stub
 	}
