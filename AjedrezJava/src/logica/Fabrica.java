@@ -15,6 +15,14 @@ public class Fabrica {
 		return null;
 	}
 	
+	public Jugador crearJugador(Mediador m) {
+		return new Jugador(m);
+	}
+	
+	public Celda crearCelda() {
+		return new Celda();
+	}
+	
 	public static Fabrica getSingleton() {
 		if(fabrica == null) fabrica = new Fabrica();
 		return fabrica;

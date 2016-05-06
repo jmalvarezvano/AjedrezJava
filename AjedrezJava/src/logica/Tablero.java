@@ -12,7 +12,12 @@ public class Tablero {
 	}
 	
 	public void inicializarTablero(Jugador j1, Jugador j2) {
+		
 		celdas = new Celda[8][8];
+		for(int i = 0; i < 8; i++) 
+			for(int j = 0; j < 8; j++) 
+				celdas[i][j] = fabrica.crearCelda();
+		
 		celdas[0][0].setPieza(fabrica.crearPieza("torre", j1));
 		celdas[0][7].setPieza(fabrica.crearPieza("torre", j1));
 		celdas[7][0].setPieza(fabrica.crearPieza("torre", j2));
@@ -33,6 +38,19 @@ public class Tablero {
 		celdas[0][5].setPieza(fabrica.crearPieza("alfil", j1));
 		celdas[7][2].setPieza(fabrica.crearPieza("alfil", j2));
 		celdas[7][5].setPieza(fabrica.crearPieza("alfil", j2));		
+	}
+
+	
+	//toString para pruebas en consola
+	@Override
+	public String toString() {
+		String out = new String();
+		for (int i = 0 ; i <= 7; i++) {			
+			out += "\n";
+			for (int j = 0 ; j <= 7; j++)
+				out += " " + celdas[i][j];
+		}
+		return out;
 	}
 
 	public Celda[][] getCeldas() {

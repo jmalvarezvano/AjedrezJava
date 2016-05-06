@@ -7,4 +7,9 @@ public class Peon extends Pieza{
 		
 	}
 	
+	@Override
+	public String toString() {
+		return "p";
+	}
+	
 }

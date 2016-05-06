@@ -39,8 +39,9 @@ public class Mediador {
 		try{
 		origen = tablero.getCelda(origenX, origenY);		
 		destino = tablero.getCelda(destinoX, destinoY);
-		} catch(Exception e) {return false;}		
+		} catch(Exception e) {return false;}
 		if (origen.getPieza() == null || !origen.getPieza().getJugador().equals(j)) return false;
+		if (j.isJaque() && !(origen.getPieza() instanceof Rey)) return false; //comprobar jaque
 		if (destino.getPieza().getJugador().equals(j)) return false;
 		if (movimientoValido(origenX, origenY, destinoX, destinoY, origen.getPieza().getMovimiento())) {
 				destino.setPieza(origen.getPieza());
@@ -79,8 +80,8 @@ public class Mediador {
 				return true;
 			}
 			else if(yRelativo == 0) {
-				for(int y = origenY + 1; y < destinoY; y++) 
-					if(tablero.getCelda(0, y).getPieza() != null) return false;
+				for(int x = origenX + 1; x < destinoY; x++) 
+					if(tablero.getCelda(x, 0).getPieza() != null) return false;
 				return true;
 			}		
 			//alfil
@@ -100,8 +101,8 @@ public class Mediador {
 				return true;
 			}
 			else if(yRelativo == 0) {
-				for(int y = origenY + 1; y < destinoY; y++) 
-					if(tablero.getCelda(0, y).getPieza() != null) return false;
+				for(int x = origenX + 1; x < destinoY; x++) 
+					if(tablero.getCelda(0, x).getPieza() != null) return false;
 				return true;
 			}
 		}

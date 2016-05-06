@@ -6,4 +6,10 @@ public class Caballo extends Pieza {
 		super(j, "caballo");
 	}
 	
+	//toSring para pruebas en consola
+	@Override
+	public String toString() {
+		return "c";
+	}
+	
 }

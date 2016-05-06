@@ -6,5 +6,11 @@ public class Alfil extends Pieza {
 		super(j, "alfil");
 		
 	}
+	
+	//toString para pruebas en consola
+	@Override
+	public String toString() {
+		return "a";
+	}
 
 }

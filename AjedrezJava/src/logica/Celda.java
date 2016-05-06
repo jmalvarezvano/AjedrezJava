@@ -27,4 +27,12 @@ public class Celda {
 	public boolean isOcupado() {
 		return ocupado;
 	}
+	
+	//toString para pruebas en consola
+	@Override
+	public String toString() {
+		if(ocupado) return pieza.toString();
+		else return "-";
+	}
+	
 }
