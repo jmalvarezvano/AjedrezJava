@@ -10,6 +10,13 @@ public class Jugador {
 	private boolean celdasDefendidasPorRival[][];  //variable usada para el jaque y jaque mate
 	
 
+	public Jugador(Mediador m) {
+		piezas = new ArrayList<Pieza>();
+		mediador = m;
+		jaque = false;
+		celdasDefendidasPorRival = new boolean[8][8];
+	}
+	
 	public boolean[][] getCeldasDefendidasPorRival() {
 		return celdasDefendidasPorRival;
 	}
@@ -34,11 +41,6 @@ public class Jugador {
 		this.jaque = jaque;
 	}
 	
-	public Jugador(Mediador m) {
-		piezas = new ArrayList<Pieza>();
-		mediador = m;
-		celdasDefendidasPorRival = new boolean[8][8];
-	}
 	
 	public boolean moverPieza(int origenX, int origenY, int destinoX, int destinoY) {
 		return mediador.moverPieza(origenX, origenY, destinoX, destinoY, this);

@@ -13,7 +13,8 @@ public class Celda {
 	}
 	
 	public Pieza getPieza() {
-		return pieza;
+		if (ocupado) return pieza;
+		return null;
 	}
 	public void setPieza(Pieza pieza) {
 		this.pieza = pieza;

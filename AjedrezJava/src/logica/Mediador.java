@@ -39,12 +39,20 @@ public class Mediador {
 		try{
 		origen = tablero.getCelda(origenX, origenY);		
 		destino = tablero.getCelda(destinoX, destinoY);
-		} catch(Exception e) {return false;}
-		if (origen.getPieza() == null || !origen.getPieza().getJugador().equals(j)) return false;
-		if (j.isJaque() && !(origen.getPieza() instanceof Rey)) return false; //comprobar jaque
-		if (destino.getPieza().getJugador().equals(j)) return false;
-		if (movimientoValido(origenX, origenY, destinoX, destinoY, origen.getPieza().getMovimiento())) {
-				destino.setPieza(origen.getPieza());
+		} catch(Exception e) {
+			System.out.println("1");
+			return false;
+		}
+		System.out.println(origen+ " to " + destino);
+		if (origen.getPieza() == null || !origen.getPieza().getJugador().equals(j)) return false; 			//pieza origen existe y es del mismo jugador
+		if (j.isJaque() && !(origen.getPieza() instanceof Rey)) return false; 								//comprobar jaque(tiene que mover el rey)
+		if (destino.getPieza() != null && destino.getPieza().getJugador().equals(j)) return false;			//si pieza destino existe tiene que ser del otro jugador
+		if (movimientoValido(origenX, origenY, destinoX, destinoY, origen.getPieza().getMovimiento())) {	
+				destino.setPieza(origen.quitarPieza());
+				if(destino.getPieza().getMovimiento().equals("peonPrimerMovimiento")) {
+					destino.getPieza().setMovimiento("peon");
+					System.out.println("actualizar peon");
+				}
 				return true;
 		}		
 		return false;
@@ -53,6 +61,10 @@ public class Mediador {
 	public boolean movimientoValido(int origenX, int origenY, int destinoX, int destinoY, String movimiento) {
 		int xRelativo = Math.abs(destinoX - origenX);
 		int yRelativo = Math.abs(destinoY - origenY);
+		System.out.println(movimiento);
+		System.out.println(xRelativo);
+		System.out.println(yRelativo);
+
 		switch (movimiento) {
 		case "alfil": 
 			if(xRelativo == yRelativo) {
@@ -67,21 +79,24 @@ public class Mediador {
 			break;
 		case "peonPrimerMovimiento":
 			if(xRelativo == 0) 
-				if(yRelativo == 1) return true;
-				else return (yRelativo == 2 && tablero.getCelda(origenX, origenY + 1).getPieza() == null);
-			else return (xRelativo == 1 && tablero.getCelda(destinoX, destinoY).getPieza() != null);
+				if(yRelativo == 1 && tablero.getCelda(destinoX, destinoY).getPieza() == null) return true;
+				else return (yRelativo == 2 && tablero.getCelda(origenX, origenY + 1).getPieza() == null);				//esta linea no funciona si el jugador tiene que avanzar hacia abajo(comprueba si hay alguien en medio en el caso de saltar 2)
+			else return (xRelativo == 1 && yRelativo == 1 && tablero.getCelda(destinoX, destinoY).getPieza() != null);
 		case "peon":
-			if(xRelativo == 0 && yRelativo == 1) return true;
+			if(xRelativo == 0){
+				if(yRelativo == 1 && tablero.getCelda(destinoX, destinoY).getPieza() == null) return true;
+			} else return (xRelativo == 1 && (yRelativo == 1) && tablero.getCelda(destinoX, destinoY).getPieza() != null);
+			break;
 		case "reina":
 			//torre
 			if(xRelativo == 0) {
 				for(int y = origenY + 1; y < destinoY; y++) 
-					if(tablero.getCelda(0, y).getPieza() != null) return false;
+					if(tablero.getCelda(origenX, y).getPieza() != null) return false;
 				return true;
 			}
 			else if(yRelativo == 0) {
-				for(int x = origenX + 1; x < destinoY; x++) 
-					if(tablero.getCelda(x, 0).getPieza() != null) return false;
+				for(int x = origenX + 1; x < destinoX; x++) 
+					if(tablero.getCelda(x, origenY).getPieza() != null) return false;
 				return true;
 			}		
 			//alfil
@@ -92,17 +107,17 @@ public class Mediador {
 			}			
 			break;
 		case "rey":
-			if(xRelativo <= 1 && yRelativo <= 1) return true;
+			if(xRelativo <= 1 && yRelativo <= 1) return true;			//no tiene implementado el jaque
 			break;
 		case "torre":
 			if(xRelativo == 0) {
 				for(int y = origenY + 1; y < destinoY; y++) 
-					if(tablero.getCelda(0, y).getPieza() != null) return false;
+					if(tablero.getCelda(origenX, y).getPieza() != null) return false;
 				return true;
 			}
 			else if(yRelativo == 0) {
-				for(int x = origenX + 1; x < destinoY; x++) 
-					if(tablero.getCelda(0, x).getPieza() != null) return false;
+				for(int x = origenX + 1; x < destinoX; x++) 
+					if(tablero.getCelda(x, origenY).getPieza() != null) return false;
 				return true;
 			}
 		}

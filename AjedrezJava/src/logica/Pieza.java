@@ -6,6 +6,7 @@ public abstract class Pieza {
 	
 	public Pieza(Jugador j, String m) {
 		jugador = j;
+		movimiento = m;
 	}
 
 	public String getMovimiento() {

@@ -36,11 +36,16 @@ public class Main {
 		mediador.setTablero(tablero);
 		System.out.println(tablero);
 		
+		Jugador jugador[] = new Jugador[] {j1, j2};
+		int turno = 0;
+		boolean mover;
+		
 		int xOr;
 		int yOr;
 		int xDes;
 		int yDes;
 		while(true) {
+			System.out.println("Turno: Jugador " + (turno + 1));	
 			System.out.println("x origen: ");
 			xOr = Integer.parseInt(in.nextLine());
 			System.out.println("y origen: ");
@@ -49,18 +54,9 @@ public class Main {
 			xDes = Integer.parseInt(in.nextLine());
 			System.out.println("y destino: ");
 			yDes = Integer.parseInt(in.nextLine());
-			System.out.println(j1.moverPieza(xOr, yOr, xDes, yDes));
-			System.out.println(tablero);
-			
-			System.out.println("x origen: ");
-			xOr = Integer.parseInt(in.nextLine());
-			System.out.println("y origen: ");
-			yOr = Integer.parseInt(in.nextLine());
-			System.out.println("x destino: ");
-			xDes = Integer.parseInt(in.nextLine());
-			System.out.println("y destino: ");
-			yDes = Integer.parseInt(in.nextLine());
-			System.out.println(j2.moverPieza(xOr, yOr, xDes, yDes));
+			mover = jugador[turno].moverPieza(xOr, yOr, xDes, yDes);
+			if (mover) 	turno = Math.abs(turno - 1);			
+			System.out.println(mover);
 			System.out.println(tablero);
 
 		}
