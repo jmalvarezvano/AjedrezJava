@@ -78,11 +78,25 @@ public class Mediador {
 			if((xRelativo == 1 && yRelativo == 2) || (xRelativo == 2 && yRelativo == 1)) return true;
 			break;
 		case "peonPrimerMovimiento":
+			int aux;
+			if (tablero.getCelda(origenX, origenY).getPieza().getJugador().equals(jugador1)) {
+				if (origenY >= destinoY) return false;
+				aux = 1;
+			} else {
+				if (origenY <= origenX) return false;
+				aux = -1;
+			}
+			
 			if(xRelativo == 0) 
 				if(yRelativo == 1 && tablero.getCelda(destinoX, destinoY).getPieza() == null) return true;
-				else return (yRelativo == 2 && tablero.getCelda(origenX, origenY + 1).getPieza() == null);				//esta linea no funciona si el jugador tiene que avanzar hacia abajo(comprueba si hay alguien en medio en el caso de saltar 2)
+				else return (yRelativo == 2 && tablero.getCelda(origenX, origenY + aux).getPieza() == null);				//esta linea no funciona si el jugador tiene que avanzar hacia abajo(comprueba si hay alguien en medio en el caso de saltar 2)
 			else return (xRelativo == 1 && yRelativo == 1 && tablero.getCelda(destinoX, destinoY).getPieza() != null);
 		case "peon":
+			if (tablero.getCelda(origenX, origenY).getPieza().getJugador().equals(jugador1)) {
+				if (origenY >= destinoY) return false;
+			} else {
+				if (origenY <= origenX) return false;
+			}
 			if(xRelativo == 0){
 				if(yRelativo == 1 && tablero.getCelda(destinoX, destinoY).getPieza() == null) return true;
 			} else return (xRelativo == 1 && (yRelativo == 1) && tablero.getCelda(destinoX, destinoY).getPieza() != null);
