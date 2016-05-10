@@ -3,8 +3,6 @@ package logica;
 import java.util.Scanner;
 
 public class Main {
-	//Comentario de prueba
-	int x = 0;
 	/*
 	 * Clase para hacer pruebas.
 	 */

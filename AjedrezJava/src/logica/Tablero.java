@@ -4,7 +4,7 @@ public class Tablero {
 	private Celda[][] celdas;
 	private Mediador mediador;
 	Fabrica fabrica;
-	
+	 
 	public Tablero(Mediador m) {
 		mediador = m;
 		fabrica = Fabrica.getSingleton();
