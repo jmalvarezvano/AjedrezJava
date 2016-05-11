@@ -45,7 +45,7 @@ public class Mediador {
 		}
 		System.out.println(origen+ " to " + destino);
 		if (origen.getPieza() == null || !origen.getPieza().getJugador().equals(j)) return false; 			//pieza origen existe y es del mismo jugador
-		if (j.isJaque() && !(origen.getPieza() instanceof Rey)) return false; 								//comprobar jaque(tiene que mover el rey)
+		if (((Rey)tablero.getCelda(origenX, origenY).getPieza()).isJaque() && !(origen.getPieza() instanceof Rey)) return false; 								//comprobar jaque(tiene que mover el rey)
 		if (destino.getPieza() != null && destino.getPieza().getJugador().equals(j)) return false;			//si pieza destino existe tiene que ser del otro jugador
 		if (movimientoValido(origenX, origenY, destinoX, destinoY, origen.getPieza().getMovimiento())) {	
 				destino.setPieza(origen.quitarPieza());
@@ -121,6 +121,10 @@ public class Mediador {
 			}			
 			break;
 		case "rey":
+			Rey rey = (Rey)tablero.getCelda(origenX, origenY).getPieza();
+			if (rey.isJaque()) {
+				if (rey.getCeldasDefendidasPorRival()[destinoX][destinoY]) return false;
+     		}
 			if(xRelativo <= 1 && yRelativo <= 1) return true;			//no tiene implementado el jaque
 			break;
 		case "torre":
@@ -136,5 +140,12 @@ public class Mediador {
 			}
 		}
 		return false;
+	}
+	
+	public boolean isJaqueMate(int origenX, int origenY) {
+		for (int x = -1; x < 2; x++)
+			for (int y = -1; y < 2; y++)
+				if (!((Rey)(tablero.getCelda(origenX, origenY).getPieza())).getCeldasDefendidasPorRival()[origenX + x][origenY + y]) return false;
+		return true;
 	}
 }
