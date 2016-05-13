@@ -3,11 +3,11 @@ package logica;
 public class Tablero {
 	private Celda[][] celdas;
 	private Mediador mediador;
-	Fabrica fabrica;
+	Fabrica fabricaPiezas;
 	
 	public Tablero(Mediador m) {
 		mediador = m;
-		fabrica = Fabrica.getSingleton();
+		fabricaPiezas = FabricaPiezas.getSingleton();
 		this.inicializarTablero(mediador.getJugador1(), mediador.getJugador2());
 	}
 	
@@ -16,28 +16,28 @@ public class Tablero {
 		celdas = new Celda[8][8];
 		for(int i = 0; i < 8; i++) 
 			for(int j = 0; j < 8; j++) 
-				celdas[i][j] = fabrica.crearCelda();
+				celdas[i][j] = new Celda();
 		
-		celdas[0][0].setPieza(fabrica.crearPieza("torre", j1));
-		celdas[0][7].setPieza(fabrica.crearPieza("torre", j1));
-		celdas[7][0].setPieza(fabrica.crearPieza("torre", j2));
-		celdas[7][7].setPieza(fabrica.crearPieza("torre", j2));
-		celdas[4][0].setPieza(fabrica.crearPieza("rey", j1));
-		celdas[4][7].setPieza(fabrica.crearPieza("rey", j2));
-		celdas[3][0].setPieza(fabrica.crearPieza("reina", j1));
-		celdas[3][7].setPieza(fabrica.crearPieza("reina", j2));
+		celdas[0][0].setPieza(fabricaPiezas.crear("torre", j1));
+		celdas[0][7].setPieza(fabricaPiezas.crear("torre", j1));
+		celdas[7][0].setPieza(fabricaPiezas.crear("torre", j2));
+		celdas[7][7].setPieza(fabricaPiezas.crear("torre", j2));
+		celdas[4][0].setPieza(fabricaPiezas.crear("rey", j1));
+		celdas[4][7].setPieza(fabricaPiezas.crear("rey", j2));
+		celdas[3][0].setPieza(fabricaPiezas.crear("reina", j1));
+		celdas[3][7].setPieza(fabricaPiezas.crear("reina", j2));
 		for(int i = 0; i < 8; i++) {
-			celdas[i][1].setPieza(fabrica.crearPieza("peon", j1));
-			celdas[i][6].setPieza(fabrica.crearPieza("peon", j2));
+			celdas[i][1].setPieza(fabricaPiezas.crear("peon", j1));
+			celdas[i][6].setPieza(fabricaPiezas.crear("peon", j2));
 		}
-		celdas[1][0].setPieza(fabrica.crearPieza("caballo", j1));
-		celdas[6][0].setPieza(fabrica.crearPieza("caballo", j1));
-		celdas[1][7].setPieza(fabrica.crearPieza("caballo", j2));
-		celdas[6][7].setPieza(fabrica.crearPieza("caballo", j2));
-		celdas[2][0].setPieza(fabrica.crearPieza("alfil", j1));
-		celdas[5][0].setPieza(fabrica.crearPieza("alfil", j1));
-		celdas[2][7].setPieza(fabrica.crearPieza("alfil", j2));
-		celdas[5][7].setPieza(fabrica.crearPieza("alfil", j2));		
+		celdas[1][0].setPieza(fabricaPiezas.crear("caballo", j1));
+		celdas[6][0].setPieza(fabricaPiezas.crear("caballo", j1));
+		celdas[1][7].setPieza(fabricaPiezas.crear("caballo", j2));
+		celdas[6][7].setPieza(fabricaPiezas.crear("caballo", j2));
+		celdas[2][0].setPieza(fabricaPiezas.crear("alfil", j1));
+		celdas[5][0].setPieza(fabricaPiezas.crear("alfil", j1));
+		celdas[2][7].setPieza(fabricaPiezas.crear("alfil", j2));
+		celdas[5][7].setPieza(fabricaPiezas.crear("alfil", j2));		
 	}
 
 	
