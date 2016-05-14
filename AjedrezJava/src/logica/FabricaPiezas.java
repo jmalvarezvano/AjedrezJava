@@ -1,10 +1,12 @@
 package logica;
 
-public class Fabrica {
+public class FabricaPiezas extends Fabrica {
 	
-	private static Fabrica fabrica;
+	private static FabricaPiezas fabricaPiezas;
 	
-	public Pieza crearPieza(String p, Jugador j) {
+	private FabricaPiezas() {}
+	
+	public Pieza crear(String p, Jugador j) {
 		p = p.toLowerCase();
 		if (p.equals("alfil")) return new Alfil(j);
 		if (p.equals("caballo")) return new Caballo(j);
@@ -15,16 +17,8 @@ public class Fabrica {
 		return null;
 	}
 	
-	public Jugador crearJugador(Mediador m) {
-		return new Jugador(m);
-	}
-	
-	public Celda crearCelda() {
-		return new Celda();
-	}
-	
-	public static Fabrica getSingleton() {
-		if(fabrica == null) fabrica = new Fabrica();
-		return fabrica;
+	public static FabricaPiezas getSingleton() {
+		if(fabricaPiezas == null) fabricaPiezas = new FabricaPiezas();
+		return fabricaPiezas;
 	}
 }

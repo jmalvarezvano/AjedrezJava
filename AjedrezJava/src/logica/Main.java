@@ -20,16 +20,15 @@ public class Main {
 			for (int j = 0; j < 8; j++)
 				celdas[i][j] = new Celda();
 		
-		Fabrica fabrica = Fabrica.getSingleton();
-		celdas[0][0].setPieza(fabrica.crearPieza("torre", j1));
+		FabricaPiezas fabricaPiezas = FabricaPiezas.getSingleton();
+		celdas[0][0].setPieza(fabricaPiezas.crear("torre", j1));
 	}
 	public static void prueba2() {
 		Scanner in = new Scanner(System.in);
 		
-		Fabrica fabrica = Fabrica.getSingleton();
 		Mediador mediador = new Mediador();		
-		Jugador j1 = fabrica.crearJugador(mediador);
-		Jugador j2 = fabrica.crearJugador(mediador);
+		Jugador j1 = new Jugador(mediador);
+		Jugador j2 = new Jugador(mediador);
 		mediador.setJugador1(j1);
 		mediador.setJugador2(j2);
 		Tablero tablero = new Tablero(mediador);
