@@ -1,4 +1,4 @@
-package mychessmate;
+package presentacion;
 
 
 import java.net.URL;
@@ -18,7 +18,7 @@ public class Resource {
     protected static ResourceBundle resources;
     static{
         try{
-            resources = ResourceBundle.getBundle("mychessmate.res.MyChessmateProperties",Locale.getDefault());
+            resources = ResourceBundle.getBundle("presentacion.res.MyChessmateProperties",Locale.getDefault());
         }catch(Exception e){
             System.out.println("Mychessmate properties not found");
             javax.swing.JOptionPane.showMessageDialog(null,

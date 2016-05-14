@@ -1,6 +1,14 @@
 package logica;
 
 public abstract class Pieza {
+	
+	public final static int PAWN = 100;
+    public final static int KNIGHT = 320;
+    public final static int BISHOP = 325;
+    public final static int ROOK = 500;
+    public final static int QUEEN = 900;
+    public final static int KING = 1000000;   
+
 	private String movimiento;
 	private Jugador jugador;
 	

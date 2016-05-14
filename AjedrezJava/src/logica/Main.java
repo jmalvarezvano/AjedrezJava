@@ -2,8 +2,9 @@ package logica;
 
 import java.util.Scanner;
 
-public class Main {
+import presentacion.MainPane;
 
+public class Main {
 	/*
 	 * Clase para hacer pruebas.
 	 */
@@ -37,8 +38,8 @@ public class Main {
 		
 		Jugador jugador[] = new Jugador[] {j1, j2};
 		int turno = 0;
-		boolean mover;
-		
+		boolean mover;	
+		MainPane.main(mediador);
 		int xOr;
 		int yOr;
 		int xDes;

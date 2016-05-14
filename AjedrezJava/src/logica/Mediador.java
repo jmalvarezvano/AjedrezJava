@@ -45,7 +45,7 @@ public class Mediador {
 		}
 		System.out.println(origen+ " to " + destino);
 		if (origen.getPieza() == null || !origen.getPieza().getJugador().equals(j)) return false; 			//pieza origen existe y es del mismo jugador
-		if (j.isJaque() && !(origen.getPieza() instanceof Rey)) return false; 								//comprobar jaque(tiene que mover el rey)
+		if (((Rey)tablero.getCelda(origenX, origenY).getPieza()).isJaque() && !(origen.getPieza() instanceof Rey)) return false; 								//comprobar jaque(tiene que mover el rey)
 		if (destino.getPieza() != null && destino.getPieza().getJugador().equals(j)) return false;			//si pieza destino existe tiene que ser del otro jugador
 		if (movimientoValido(origenX, origenY, destinoX, destinoY, origen.getPieza().getMovimiento())) {	
 				destino.setPieza(origen.quitarPieza());
@@ -78,11 +78,25 @@ public class Mediador {
 			if((xRelativo == 1 && yRelativo == 2) || (xRelativo == 2 && yRelativo == 1)) return true;
 			break;
 		case "peonPrimerMovimiento":
+			int aux;
+			if (tablero.getCelda(origenX, origenY).getPieza().getJugador().equals(jugador1)) {
+				if (origenY >= destinoY) return false;
+				aux = 1;
+			} else {
+				if (origenY <= origenX) return false;
+				aux = -1;
+			}
+			
 			if(xRelativo == 0) 
 				if(yRelativo == 1 && tablero.getCelda(destinoX, destinoY).getPieza() == null) return true;
-				else return (yRelativo == 2 && tablero.getCelda(origenX, origenY + 1).getPieza() == null);				//esta linea no funciona si el jugador tiene que avanzar hacia abajo(comprueba si hay alguien en medio en el caso de saltar 2)
+				else return (yRelativo == 2 && tablero.getCelda(origenX, origenY + aux).getPieza() == null);				//esta linea no funciona si el jugador tiene que avanzar hacia abajo(comprueba si hay alguien en medio en el caso de saltar 2)
 			else return (xRelativo == 1 && yRelativo == 1 && tablero.getCelda(destinoX, destinoY).getPieza() != null);
 		case "peon":
+			if (tablero.getCelda(origenX, origenY).getPieza().getJugador().equals(jugador1)) {
+				if (origenY >= destinoY) return false;
+			} else {
+				if (origenY <= origenX) return false;
+			}
 			if(xRelativo == 0){
 				if(yRelativo == 1 && tablero.getCelda(destinoX, destinoY).getPieza() == null) return true;
 			} else return (xRelativo == 1 && (yRelativo == 1) && tablero.getCelda(destinoX, destinoY).getPieza() != null);
@@ -107,6 +121,10 @@ public class Mediador {
 			}			
 			break;
 		case "rey":
+			Rey rey = (Rey)tablero.getCelda(origenX, origenY).getPieza();
+			if (rey.isJaque()) {
+				if (rey.getCeldasDefendidasPorRival()[destinoX][destinoY]) return false;
+     		}
 			if(xRelativo <= 1 && yRelativo <= 1) return true;			//no tiene implementado el jaque
 			break;
 		case "torre":
@@ -122,5 +140,12 @@ public class Mediador {
 			}
 		}
 		return false;
+	}
+	
+	public boolean isJaqueMate(int origenX, int origenY) {
+		for (int x = -1; x < 2; x++)
+			for (int y = -1; y < 2; y++)
+				if (!((Rey)(tablero.getCelda(origenX, origenY).getPieza())).getCeldasDefendidasPorRival()[origenX + x][origenY + y]) return false;
+		return true;
 	}
 }

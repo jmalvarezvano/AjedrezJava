@@ -19,9 +19,9 @@ public class PreferencesPane extends JFrame implements ActionListener{
      JButton cancel;
      final static int WHITE = 0;
      final static int BLACK = 1;
-     MyChessmate chessmate;
+     MainPane chessmate;
 
-    public PreferencesPane(MyChessmate chessmate){
+    public PreferencesPane(MainPane chessmate){
         super("Options");
         this.chessmate = chessmate;
         JPanel mainPane = new JPanel(new BorderLayout());

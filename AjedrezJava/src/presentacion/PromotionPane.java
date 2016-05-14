@@ -6,7 +6,10 @@
 package presentacion;
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
+
+import logica.Pieza;
 /**
  *
  * @author Melvic
@@ -15,16 +18,16 @@ public class PromotionPane extends JDialog implements ActionListener{
     int index;
     int location;
     JPanel main_pane;
-    MyChessmate chessmate;
+    MainPane chessmate;
 
-    public PromotionPane(MyChessmate chessmate){
+    public PromotionPane(MainPane chessmate){
         setTitle("New Piece");
         this.chessmate = chessmate;
         main_pane = new JPanel(new GridLayout(1,4,10,0));
         Resource resource = new Resource();
 
         int[] cmdActions = {
-            Piece.QUEEN,Piece.ROOK,Piece.BISHOP,Piece.KNIGHT
+            Pieza.QUEEN,Pieza.ROOK,Pieza.BISHOP,Pieza.KNIGHT
         };        
         for(int i=0; i<cmdActions.length; i++){
             JButton button = new JButton();
@@ -36,7 +39,7 @@ public class PromotionPane extends JDialog implements ActionListener{
         setResizable(false);
         addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
-                resumeGame(Piece.QUEEN);
+                resumeGame(Pieza.QUEEN);
             }
         });
     }
@@ -58,9 +61,9 @@ public class PromotionPane extends JDialog implements ActionListener{
         resumeGame(promotion_piece);
     }
     public void resumeGame(int promotion_piece){  
-        chessmate.position.human_pieces[index] = new Piece(promotion_piece,location);
-        chessmate.newHistoryPosition();
-        chessmate.board_pane.repaint();
-        chessmate.state = GameData.COMPUTER_MOVE;
+//        chessmate.position.human_pieces[index] = new Piece(promotion_piece,location);
+//        chessmate.newHistoryPosition();
+//        chessmate.board_pane.repaint();
+//        chessmate.state = GameData.COMPUTER_MOVE;
     }
 }
