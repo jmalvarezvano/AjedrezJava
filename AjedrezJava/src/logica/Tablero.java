@@ -1,6 +1,7 @@
 package logica;
 /*
  * comentario de prueba
+ * otra prueba
  */
 public class Tablero {
 	private Celda[][] celdas;
