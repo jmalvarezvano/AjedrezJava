@@ -2,11 +2,13 @@ package logica;
 /*
  * comentario de prueba
  * otra prueba
+ * prueba dani
  */
 public class Tablero {
 	private Celda[][] celdas;
 	private Mediador mediador;
 	Fabrica fabricaPiezas;
+	boolean puebaDani;
 	
 	public Tablero(Mediador m) {
 		mediador = m;
