@@ -4,11 +4,13 @@ package logica;
  * otra prueba
  * prueba dani
  */
+
 public class Tablero {
 	private Celda[][] celdas;
 	private Mediador mediador;
 	Fabrica fabricaPiezas;
 	boolean puebaDani;
+	int prueba = 5;
 	
 	public Tablero(Mediador m) {
 		mediador = m;
