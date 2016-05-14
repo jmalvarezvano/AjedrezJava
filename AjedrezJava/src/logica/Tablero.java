@@ -1,12 +1,10 @@
 package logica;
-/*
- * comentario de prueba
- * otra prueba
- */
+
 public class Tablero {
 	private Celda[][] celdas;
 	private Mediador mediador;
 	Fabrica fabricaPiezas;
+	int prueba = 5;
 	
 	public Tablero(Mediador m) {
 		mediador = m;
