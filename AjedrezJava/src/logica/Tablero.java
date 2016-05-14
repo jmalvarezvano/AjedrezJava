@@ -1,5 +1,7 @@
 package logica;
-
+/*
+ * comentario de prueba
+ */
 public class Tablero {
 	private Celda[][] celdas;
 	private Mediador mediador;
