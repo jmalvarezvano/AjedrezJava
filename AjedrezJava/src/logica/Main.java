@@ -26,7 +26,6 @@ public class Main {
 	}
 	public static void prueba2() {
 		Scanner in = new Scanner(System.in);
-		
 		Mediador mediador = new Mediador();		
 		Jugador j1 = new Jugador(mediador);
 		Jugador j2 = new Jugador(mediador);

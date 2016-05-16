@@ -3,7 +3,7 @@ package logica;
 public class Caballo extends Pieza {
 
 	public Caballo(Jugador j) {
-		super(j, "caballo");
+		super(j, Pieza.KNIGHT);
 	}
 	
 	//toSring para pruebas en consola

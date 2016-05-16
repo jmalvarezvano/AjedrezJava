@@ -13,13 +13,12 @@ import java.awt.*;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import logica.Jugador;
 import logica.Mediador;
 import logica.Pieza;
 
@@ -28,40 +27,32 @@ import logica.Pieza;
  * @author Melvic
  */
 public class MainPane extends JFrame implements MouseListener{
-    //Position position;        
     ChessBoardPane board_pane;  
-    //HistoryBoardPane history_pane;
     Mediador mediador;
     JPanel east_pane;
     Resource resource = new Resource();
+    Jugador turno;
     Map<Integer,Image> images = new HashMap<Integer,Image>();
     Map<Integer,Icon> icon_images = new HashMap<Integer,Icon>();
-    //Move move = new Move();
-    //boolean piece_selected;
-    boolean is_white;
+    
     int state;
-    //MoveSearcher move_searcher;
-    //Game game;    
     JLabel new_game,quit,about,history,first,prev,next,last;    
     JPanel main_pane = new JPanel(new BorderLayout());
     PreferencesPane play_options;
-    //boolean castling;
     PromotionPane promotion_pane;
-    //List<Position> history_positions = new ArrayList<Position>();
-    //int history_count;
     Color bg_color = Color.decode("#efd39c");
     
     public MainPane(Mediador mediador){
         super("Ajedrez Proyecto DDS");                                  
-        setContentPane(main_pane);                
+        setContentPane(main_pane);  
+        this.mediador = mediador;
+        turno = mediador.getTurno();
         //position = new Position();
         promotion_pane = new PromotionPane(this);
-        
+        System.out.println(mediador);
         loadMenuIcons();
         loadBoardImages();
-        
         board_pane = new ChessBoardPane();                                             
-        
         main_pane.add(createMenuPane(),BorderLayout.WEST);
         main_pane.add(board_pane,BorderLayout.CENTER);  
         main_pane.setBackground(bg_color);      
@@ -71,7 +62,7 @@ public class MainPane extends JFrame implements MouseListener{
         Dimension size = getSize();
         size.height = 523;
         setSize(size);
-        
+        mediador.setInterfaz(this);
         addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
                 quit();
@@ -88,7 +79,7 @@ public class MainPane extends JFrame implements MouseListener{
         about.addMouseListener(this);
        // history.addMouseListener(this);
         quit.addMouseListener(this);
-        
+     
         JPanel pane = new JPanel(new GridLayout(4,1));
         pane.add(new_game);        
        // pane.add(history);
@@ -101,6 +92,10 @@ public class MainPane extends JFrame implements MouseListener{
         menu_pane.setBorder(BorderFactory.createEmptyBorder(0,20,20,0));
         return menu_pane;
     }
+    
+    public void setTurno(Jugador jugador) {
+		turno = jugador;
+	}
     public void createEastPane(){           
         east_pane = new JPanel(new BorderLayout());
         //history_pane = new HistoryBoardPane();                
@@ -136,13 +131,13 @@ public class MainPane extends JFrame implements MouseListener{
         last.addMouseListener(this);
     }    
     public void newGame(){                
-       /* 
-        * if(!east_pane.isVisible()){
+        
+         if(!east_pane.isVisible()){
             east_pane.setVisible(true);
             pack();
             setLocationRelativeTo(null);
         } 
-        */       
+              
 //        is_white = play_options.white_button.isSelected();
 //        move.source_location = -1;
 //        move.destination = -1;
@@ -150,10 +145,10 @@ public class MainPane extends JFrame implements MouseListener{
 //        position.initialize(is_white);
         //game = new Game(position);               
         loadPieceImages();
-        promotion_pane.setIcons(is_white);
+        promotion_pane.setIcons(true);
         board_pane.repaint();
         
-        if(is_white) state = GameData.HUMAN_MOVE;
+        if(true) state = GameData.HUMAN_MOVE;
         else state = GameData.COMPUTER_MOVE;
         //play();
     }   
@@ -230,6 +225,7 @@ public class MainPane extends JFrame implements MouseListener{
             if(play_options == null) {
                 play_options = new PreferencesPane(this);
             }
+            
             play_options.setVisible(true);
         }else if(source == about){
             AboutPane.createAndShowUI();
@@ -301,17 +297,43 @@ public class MainPane extends JFrame implements MouseListener{
     public class ChessBoardPane extends JPanel implements MouseListener{     
         Image animating_image;
         int movingX,movingY,desX,desY,deltaX,deltaY;
+        int origenX, origenY, destinoX, destinoY;
+        boolean segundoClick, seleccionandoPieza;
         public ChessBoardPane(){
-            setPreferredSize(new Dimension(450,495));
+            setPreferredSize(new Dimension(500,500));
             setBackground(bg_color);
             addMouseListener(this);
         }
-//        @Override
-//        public void paintComponent(Graphics g){
-//            if(position.board == null) return;
-//            super.paintComponent(g);  
-//            g.drawImage(images.get(GameData.MYCHESSMATE),20,36,this);
-//            g.drawImage(images.get(GameData.BOARD_IMAGE),20,65,this);       
+        
+        //dibujar tabla
+        @Override
+        public void paintComponent(Graphics g){
+            super.paintComponent(g);  
+            g.drawImage(images.get(GameData.MYCHESSMATE),20,36,this); // cambiar esta imagen
+            g.drawImage(images.get(GameData.BOARD_IMAGE),20,65,this);  
+            int x=0 ,y=0;
+            Pieza pieza;
+            System.out.println(Thread.activeCount());
+            if(seleccionandoPieza) g.drawImage(images.get(GameData.GLOW),origenX*45+45,origenY*45+90,this);  
+
+           //bloque try catch para pruebas. Se puede quitar, x e y tambien
+try{
+            for(int i = 45; i <= 360; i += 45) {
+            	
+            	for(int j = 90; j <= 405; j += 45) {
+            		x=i; y=j;
+            		pieza = mediador.getTablero().getCelda((i-45)/45, (j-90)/45).getPieza();
+            		if(pieza != null) {
+            			if(pieza.getJugador().equals(mediador.getJugador1())) {
+                    g.drawImage(images.get(pieza.getTipo()),i,j,this);
+            			} else {
+            				g.drawImage(images.get(-pieza.getTipo()),i,j,this);
+            			}
+            		}
+
+            	}
+            }
+}catch(Exception e){System.out.println("i: "+x+" j: "+y);}
 //            for (int i = 0; i < position.board.length-11; i++) {
 //                if (position.board[i] == GameData.ILLEGAL) continue;                                                                
 //                int x = i%10;
@@ -335,15 +357,36 @@ public class MainPane extends JFrame implements MouseListener{
 //                    g.drawImage(images.get(-piece),x*45,y*45,this);
 //                }               
 //            }  
-//            if(state == GameData.ANIMATING){
-//                g.drawImage(animating_image,movingX,movingY,this);
-//            }
-//        }
+            if(state == GameData.ANIMATING){
+                g.drawImage(animating_image,movingX,movingY,this);
+            }
+        }
 
         
         //es la clave
         @Override
         public void mouseClicked(MouseEvent e) {
+        	Point p = e.getPoint();
+        	System.out.println("x: "+p.getX()+" y: "+p.getY());
+        	if(segundoClick) {
+        		destinoX = (int) (p.getX() - 45) / 45;
+        		destinoY = (int) ((p.getY() - 90) / 45);
+        		turno.moverPieza(origenX, origenY, destinoX, destinoY);
+        		segundoClick = false;
+        		seleccionandoPieza = false;
+        		System.out.println(origenX+" "+origenY+" to "+destinoX+" "+destinoY);        		
+        	} else {
+        		seleccionandoPieza = true;
+        		origenX = (int) (p.getX() - 45) / 45;
+        		origenY = (int) ((p.getY() - 90) / 45);
+        		segundoClick = true;
+        		
+        	}
+        	repaint();
+        	
+        	
+        	
+        	
 //            if(state != GameData.HUMAN_MOVE) return;
 //            int location = boardValue(e.getY())*10+boardValue(e.getX());              
 //            if(position.board[location] == GameData.ILLEGAL) return;
@@ -611,22 +654,24 @@ public class MainPane extends JFrame implements MouseListener{
 //        history_count = history_positions.size()-1;
 //        history_pane.repaint();
 //    }
+    
+    //Cargar imagenes en la memoria para el uso posterior
     public void loadPieceImages(){
         char[] resource_keys = {'p','n','b','r','q','k'};
-        boolean is_white = true;
         int[] images_keys = {Pieza.PAWN,Pieza.KNIGHT,Pieza.BISHOP,Pieza.ROOK,Pieza.QUEEN,Pieza.KING};
         try{
             for(int i=0; i<resource_keys.length; i++){             
-                images.put(images_keys[i],ImageIO.read(resource.getResource((is_white?"w":"b")+resource_keys[i])));
-                images.put(-images_keys[i],ImageIO.read(resource.getResource((is_white?"b":"w")+resource_keys[i])));   
-                images.put(images_keys[i]+10,ImageIO.read(resource.getResource((is_white?"w":"b")+resource_keys[i]+'2')));
-                images.put(-images_keys[i]+10,ImageIO.read(resource.getResource((is_white?"b":"w")+resource_keys[i]+'2'))); 
+                images.put(images_keys[i],ImageIO.read(resource.getResource("w"+resource_keys[i])));
+                images.put(-images_keys[i],ImageIO.read(resource.getResource("b"+resource_keys[i])));   
+                images.put(images_keys[i]+10,ImageIO.read(resource.getResource("w"+resource_keys[i]+'2')));
+                images.put(-images_keys[i]+10,ImageIO.read(resource.getResource("b"+resource_keys[i]+'2'))); 
             }               
         }catch(IOException ex){
             ex.printStackTrace();
         }        
     }
     
+    //Cargar imagenes en la memoria para el uso posterior
     public void loadBoardImages(){
         try{ 
             images.put(GameData.BOARD_IMAGE,ImageIO.read(resource.getResource("chessboard")));
@@ -639,6 +684,8 @@ public class MainPane extends JFrame implements MouseListener{
             ex.printStackTrace();
         }        
     }
+    
+    //Cargar imagenes en la memoria para el uso posterior
     public void loadMenuIcons(){
         icon_images.put(GameData.NEW_BUTTON,new ImageIcon(resource.getResource("new_game")));
         icon_images.put(GameData.NEW_BUTTON2,new ImageIcon(resource.getResource("new_game_hover")));
@@ -675,36 +722,39 @@ public class MainPane extends JFrame implements MouseListener{
         SwingUtilities.invokeLater(new Runnable(){
             @Override
             public void run(){
-                try{
-                    boolean nimbusFound = false;
-                        for(UIManager.LookAndFeelInfo info: UIManager.getInstalledLookAndFeels()){
-                            if(info.getName().equals("Nimbus")){
-                                UIManager.setLookAndFeel(info.getClassName());
-                                nimbusFound = true;
-                                break;
-                            }
-                        }
-                        if(!nimbusFound){
-                            int option = JOptionPane.showConfirmDialog(null,
-                                    "Nimbus Look And Feel not found\n"+
-                                    "Do you want to proceed?",
-                                    "Warning",JOptionPane.YES_NO_OPTION,
-                                    JOptionPane.WARNING_MESSAGE);
-                            if(option == JOptionPane.NO_OPTION){
-                                System.exit(0);
-                            }
-                        }
-                    MainPane mcg = new MainPane(mediador);
-                    mcg.pack();
-                    mcg.setLocationRelativeTo(null);
-                    mcg.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    mcg.setResizable(false);
-                    mcg.setVisible(true); 
-                }catch(Exception e){
-                    JOptionPane.showMessageDialog(null, e.getStackTrace());
-                    e.printStackTrace();
-                }
+               
             }
         });
+        try{
+            boolean nimbusFound = false;
+                for(UIManager.LookAndFeelInfo info: UIManager.getInstalledLookAndFeels()){
+                    if(info.getName().equals("Nimbus")){
+                        UIManager.setLookAndFeel(info.getClassName());
+                        nimbusFound = true;
+                        break;
+                    }
+                }
+                if(!nimbusFound){
+                    int option = JOptionPane.showConfirmDialog(null,
+                            "Nimbus Look And Feel not found\n"+
+                            "Do you want to proceed?",
+                            "Warning",JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
+                    if(option == JOptionPane.NO_OPTION){
+                        System.exit(0);
+                    }
+                }
+            MainPane mcg = new MainPane(mediador);
+            mcg.pack();
+            mcg.setLocationRelativeTo(null);
+            mcg.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            mcg.setResizable(false);
+            mcg.setVisible(true); 
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, e.getStackTrace());
+            e.printStackTrace();
+        }
+        
     }
+	
 }

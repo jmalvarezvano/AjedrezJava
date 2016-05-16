@@ -4,7 +4,6 @@ package presentacion;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -20,7 +19,7 @@ public class Resource {
         try{
             resources = ResourceBundle.getBundle("presentacion.res.MyChessmateProperties",Locale.getDefault());
         }catch(Exception e){
-            System.out.println("Mychessmate properties not found");
+            System.out.println("Mychessmate properties not found "+e.getMessage());
             javax.swing.JOptionPane.showMessageDialog(null,
                     "MyChessmate properties not found",
                     "Error",javax.swing.JOptionPane.ERROR_MESSAGE);

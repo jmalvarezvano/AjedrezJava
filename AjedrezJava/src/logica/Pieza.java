@@ -9,20 +9,18 @@ public abstract class Pieza {
     public final static int QUEEN = 900;
     public final static int KING = 1000000;   
 
-	private String movimiento;
+	private int tipo;
 	private Jugador jugador;
 	
-	public Pieza(Jugador j, String m) {
+	public Pieza(Jugador j, int m) {
 		jugador = j;
-		movimiento = m;
+		tipo = m;
 	}
 
-	public String getMovimiento() {
-		return movimiento;
-	}
+	
 
-	public void setMovimiento(String movimiento) {
-		this.movimiento = movimiento;
+	public int getTipo() {
+		return tipo;
 	}
 
 	public Jugador getJugador() {

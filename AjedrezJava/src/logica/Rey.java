@@ -6,7 +6,7 @@ public class Rey extends Pieza {
 	private boolean celdasDefendidasPorRival[][];  //variable usada para el jaque y jaque mate
 
 	public Rey(Jugador j) {
-		super(j, "rey");
+		super(j, Pieza.KING);
 		jaque = false;
 		celdasDefendidasPorRival = new boolean[8][8];
 	}

@@ -26,8 +26,8 @@ public class Tablero {
 				celdas[i][j] = new Celda();
 		
 		celdas[0][0].setPieza(fabricaPiezas.crear("torre", j1));
-		celdas[0][7].setPieza(fabricaPiezas.crear("torre", j1));
-		celdas[7][0].setPieza(fabricaPiezas.crear("torre", j2));
+		celdas[0][7].setPieza(fabricaPiezas.crear("torre", j2));
+		celdas[7][0].setPieza(fabricaPiezas.crear("torre", j1));
 		celdas[7][7].setPieza(fabricaPiezas.crear("torre", j2));
 		celdas[4][0].setPieza(fabricaPiezas.crear("rey", j1));
 		celdas[4][7].setPieza(fabricaPiezas.crear("rey", j2));

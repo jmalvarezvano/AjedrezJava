@@ -3,7 +3,7 @@ package logica;
 public class Torre extends Pieza {
 
 	public Torre(Jugador j) {
-		super(j, "torre");
+		super(j, Pieza.ROOK);
 	}
 	
 	//toString para pruebas en consola
