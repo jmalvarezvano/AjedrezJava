@@ -11,6 +11,7 @@ public abstract class Pieza {
 
 	private int tipo;
 	private Jugador jugador;
+	private Celda celda;
 	
 	public Pieza(Jugador j, int m) {
 		jugador = j;
@@ -18,7 +19,6 @@ public abstract class Pieza {
 	}
 
 	
-
 	public int getTipo() {
 		return tipo;
 	}
@@ -29,6 +29,10 @@ public abstract class Pieza {
 
 	public void setJugador(Jugador jugador) {
 		this.jugador = jugador;
+	}
+
+	public void setCelda(Celda celda) {
+		this.celda = celda;		
 	}
 	
 }

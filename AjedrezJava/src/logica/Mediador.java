@@ -173,4 +173,9 @@ public class Mediador {
 	public Jugador getTurno() {
 		return jugadores[turno];
 	}
+	
+	public void juegoNuevo() {
+		tablero.inicializarTablero(jugadores[0], jugadores[1]);
+	}
+	
 }

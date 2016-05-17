@@ -15,7 +15,7 @@ public class Tablero {
 	public Tablero(Mediador m) {
 		mediador = m;
 		fabricaPiezas = FabricaPiezas.getSingleton();
-		this.inicializarTablero(mediador.getJugador1(), mediador.getJugador2());
+		//this.inicializarTablero(mediador.getJugador1(), mediador.getJugador2());
 	}
 	
 	public void inicializarTablero(Jugador j1, Jugador j2) {

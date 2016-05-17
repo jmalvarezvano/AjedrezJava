@@ -33,31 +33,31 @@ public class Main {
 		mediador.setJugador2(j2);
 		Tablero tablero = new Tablero(mediador);
 		mediador.setTablero(tablero);
-		System.out.println(tablero);
+		//System.out.println(tablero);
 		
-		Jugador jugador[] = new Jugador[] {j1, j2};
-		int turno = 0;
-		boolean mover;	
+//		Jugador jugador[] = new Jugador[] {j1, j2};
+//		int turno = 0;
+//		boolean mover;	
 		MainPane.main(mediador);
-		int xOr;
-		int yOr;
-		int xDes;
-		int yDes;
-		while(true) {
-			System.out.println("Turno: Jugador " + (turno + 1));	
-			System.out.println("x origen: ");
-			xOr = Integer.parseInt(in.nextLine());
-			System.out.println("y origen: ");
-			yOr = Integer.parseInt(in.nextLine());
-			System.out.println("x destino: ");
-			xDes = Integer.parseInt(in.nextLine());
-			System.out.println("y destino: ");
-			yDes = Integer.parseInt(in.nextLine());
-			mover = jugador[turno].moverPieza(xOr, yOr, xDes, yDes);
-			if (mover) 	turno = Math.abs(turno - 1);			
-			System.out.println(mover);
-			System.out.println(tablero);
-
-		}
+//		int xOr;
+//		int yOr;
+//		int xDes;
+//		int yDes;
+//		while(true) {
+//			System.out.println("Turno: Jugador " + (turno + 1));	
+//			System.out.println("x origen: ");
+//			xOr = Integer.parseInt(in.nextLine());
+//			System.out.println("y origen: ");
+//			yOr = Integer.parseInt(in.nextLine());
+//			System.out.println("x destino: ");
+//			xDes = Integer.parseInt(in.nextLine());
+//			System.out.println("y destino: ");
+//			yDes = Integer.parseInt(in.nextLine());
+//			mover = jugador[turno].moverPieza(xOr, yOr, xDes, yDes);
+//			if (mover) 	turno = Math.abs(turno - 1);			
+//			System.out.println(mover);
+//			System.out.println(tablero);
+//
+//		}
 	}
 }
