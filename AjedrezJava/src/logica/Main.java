@@ -13,7 +13,7 @@ public class Main {
 		prueba2();
 	}
 	public static void prueba1() {
-		Mediador m = new Mediador();
+		JuegoEstandar m = new JuegoEstandar();
 		Jugador j1 = new Jugador(m);
 		Celda[][] celdas = new Celda[8][8];
 		
@@ -26,7 +26,7 @@ public class Main {
 	}
 	public static void prueba2() {
 		Scanner in = new Scanner(System.in);
-		Mediador mediador = new Mediador();		
+		JuegoEstandar mediador = new JuegoEstandar();		
 		Jugador j1 = new Jugador(mediador);
 		Jugador j2 = new Jugador(mediador);
 		mediador.setJugador1(j1);

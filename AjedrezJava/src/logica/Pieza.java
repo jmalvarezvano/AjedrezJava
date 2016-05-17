@@ -31,8 +31,15 @@ public abstract class Pieza {
 		this.jugador = jugador;
 	}
 
+<<<<<<< HEAD
 	public void setCelda(Celda celda) {
 		this.celda = celda;		
+=======
+
+
+	public void setCelda(Celda celda) {
+		this.celda = celda;
+>>>>>>> branch 'master' of https://github.com/jmalvarezvano/AjedrezJava.git
 	}
 	
 }
