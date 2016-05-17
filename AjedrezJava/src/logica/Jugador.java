@@ -5,9 +5,9 @@ import java.util.ArrayList;
 public class Jugador {
 	
 	private ArrayList<Pieza> piezas;
-	private Mediador mediador;	 
+	private JuegoEstandar mediador;	 
 	
-	public Jugador(Mediador m) {
+	public Jugador(JuegoEstandar m) {
 		piezas = new ArrayList<Pieza>();
 		mediador = m;
 	}	
@@ -16,11 +16,11 @@ public class Jugador {
 		return mediador.moverPieza(origenX, origenY, destinoX, destinoY, this);
 	}
 
-	public Mediador getMediador() {
+	public JuegoEstandar getMediador() {
 		return mediador;
 	}
 
-	public void setMediador(Mediador mediador) {
+	public void setMediador(JuegoEstandar mediador) {
 		this.mediador = mediador;
 	}
 

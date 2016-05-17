@@ -18,6 +18,7 @@ public class Celda {
 	}
 	public void setPieza(Pieza pieza) {
 		this.pieza = pieza;
+		pieza.setCelda(this);
 		ocupado = true;
 	}
 	public Pieza quitarPieza(){

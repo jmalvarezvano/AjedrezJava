@@ -2,13 +2,14 @@ package logica;
 
 import presentacion.MainPane;
 
-public class Mediador {
+public class JuegoEstandar implements Estrategia{
 	private Tablero tablero;
 	private Jugador[] jugadores;
 	private MainPane interfaz;
 	private int turno;
+	private Estrategia estrategia;
 
-	public Mediador() {
+	public JuegoEstandar() {
 		jugadores = new Jugador[2];
 		turno = 0;
 	}
@@ -38,6 +39,8 @@ public class Mediador {
 	}
 
 	public void cambiarTurno() {
+		
+		
 		turno = Math.abs(turno-1);
 		interfaz.setTurno(jugadores[turno]);
 	}
@@ -58,6 +61,10 @@ public class Mediador {
 		if (destino.getPieza() != null && destino.getPieza().getJugador().equals(j)) return false;			//si pieza destino existe tiene que ser del otro jugador
 		if (movimientoValido(origenX, origenY, destinoX, destinoY, origen.getPieza().getTipo())) {	
 				destino.setPieza(origen.quitarPieza());
+				if(destino.getPieza().getTipo() == Pieza.PAWN) {
+				if(j == jugadores[0] && destinoY == 7) promoverPeon(destino);
+				if(j == jugadores[1] && destinoY == 0) promoverPeon(destino);
+				}
 				cambiarTurno();
 				if(destino.getPieza().getTipo() == Pieza.PAWN && ((Peon) destino.getPieza()).isPrimerMovimiento()) {
 					((Peon) destino.getPieza()).setPrimerMovimiento(false);
@@ -66,6 +73,10 @@ public class Mediador {
 				return true;
 		}		
 		return false;
+	}
+
+	public void promoverPeon(Celda celda) {
+		celda.setPieza(interfaz.promoverPeon());		
 	}
 
 	public boolean movimientoValido(int origenX, int origenY, int destinoX, int destinoY, int tipo) {
@@ -90,7 +101,6 @@ public class Mediador {
 		case Pieza.PAWN:
 			if(((Peon) tablero.getCelda(origenX, origenY).getPieza()).isPrimerMovimiento()){
 				
-			
 			int aux;
 			if (tablero.getCelda(origenX, origenY).getPieza().getJugador().equals(jugadores[0])) {
 				if (origenY >= destinoY) return false;
@@ -164,7 +174,7 @@ public class Mediador {
 				if (!((Rey)(tablero.getCelda(origenX, origenY).getPieza())).getCeldasDefendidasPorRival()[origenX + x][origenY + y]) return false;
 		return true;
 	}
-
+	
 	public void setInterfaz(MainPane mainPane) {
 
 		interfaz = mainPane;
@@ -172,5 +182,21 @@ public class Mediador {
 
 	public Jugador getTurno() {
 		return jugadores[turno];
+	}
+	
+	public boolean ahogado(Jugador jugador,int origenX,int origenY){
+		/*
+		if(!rey.isJaque()){
+			return (rey.esCeldaDefendidaPorRival(origenX, origenY + 1) 
+					&& rey.esCeldaDefendidaPorRival(origenX, origenY - 1)
+					&& rey.esCeldaDefendidaPorRival(origenX + 1, origenY)
+					&& rey.esCeldaDefendidaPorRival(origenX - 1, origenY));
+		}*/
+		return false;
+	}
+
+	@Override
+	public boolean finJuego() {
+		return false;
 	}
 }
