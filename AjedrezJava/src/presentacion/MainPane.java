@@ -19,14 +19,15 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import logica.Jugador;
-import logica.Mediador;
-import logica.Pieza;
+import logica.Observer;
+import logica.estrategia.Mediador;
+import logica.piezas.Pieza;
 
 /**
  *
  * @author Melvic
  */
-public class MainPane extends JFrame implements MouseListener{
+public class MainPane extends JFrame implements MouseListener, Observer{
     ChessBoardPane board_pane;  
     Mediador mediador;
     JPanel east_pane;
@@ -375,6 +376,7 @@ try{
         	if(segundoClick) {
         		destinoX = (int) (p.getX() - 45) / 45;
         		destinoY = (int) (8 - (p.getY() - 90) / 45);
+        		
         		turno.moverPieza(origenX, origenY, destinoX, destinoY);
         		segundoClick = false;
         		seleccionandoPieza = false;

@@ -1,8 +1,11 @@
-package logica;
+package logica.estrategia;
 
+import logica.Jugador;
+import logica.Subject;
+import logica.Tablero;
 import presentacion.MainPane;
 
-public abstract class Mediador {
+public abstract class Mediador implements Estrategia, Subject {
 
 	protected Tablero tablero;
 	protected Jugador[] jugadores;
@@ -17,6 +20,10 @@ public abstract class Mediador {
 	public void setInterfaz(MainPane mainPane) {
 
 		interfaz = mainPane;
+	}
+	
+	public void actualizarTurnoInterfaz() {
+		interfaz.setTurno(jugadores[turno]);
 	}
 
 	public Jugador getTurno() {
@@ -50,12 +57,8 @@ public abstract class Mediador {
 		this.jugadores[1] = jugador2;
 	}
 
-	public void cambiarTurno() {
+	protected void cambiarTurno() {
 		turno = Math.abs(turno-1);
-		interfaz.setTurno(jugadores[turno]);
 	}
-	
-	public abstract boolean moverPieza(int origenX, int origenY, int destinoX, int destinoY, Jugador j);
-
 	
 }

@@ -1,5 +1,7 @@
 package logica;
 
+import logica.piezas.Pieza;
+
 public class Celda {
 	private Pieza pieza;
 	private	boolean ocupado;

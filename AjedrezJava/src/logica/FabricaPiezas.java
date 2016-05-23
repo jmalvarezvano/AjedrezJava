@@ -1,5 +1,13 @@
 package logica;
 
+import logica.piezas.Alfil;
+import logica.piezas.Caballo;
+import logica.piezas.Peon;
+import logica.piezas.Pieza;
+import logica.piezas.Reina;
+import logica.piezas.Rey;
+import logica.piezas.Torre;
+
 public class FabricaPiezas extends Fabrica {
 	
 	private static FabricaPiezas fabricaPiezas;

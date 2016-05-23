@@ -2,6 +2,9 @@ package logica;
 
 import java.util.ArrayList;
 
+import logica.estrategia.Mediador;
+import logica.piezas.Pieza;
+
 public class Jugador {
 	
 	private ArrayList<Pieza> piezas;
@@ -13,7 +16,7 @@ public class Jugador {
 	}	
 	
 	public boolean moverPieza(int origenX, int origenY, int destinoX, int destinoY) {
-		return mediador.moverPieza(origenX, origenY, destinoX, destinoY, this);
+		return mediador.moverPieza(new Movimiento(origenX, origenY, destinoX, destinoY, this));
 	}
 
 	public Mediador getMediador() {

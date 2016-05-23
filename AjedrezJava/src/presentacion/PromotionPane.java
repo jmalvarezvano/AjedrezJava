@@ -9,7 +9,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import logica.Pieza;
+import logica.piezas.Pieza;
 /**
  *
  * @author Melvic

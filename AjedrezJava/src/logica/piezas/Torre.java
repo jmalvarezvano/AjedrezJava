@@ -1,4 +1,6 @@
-package logica;
+package logica.piezas;
+
+import logica.Jugador;
 
 public class Torre extends Pieza {
 

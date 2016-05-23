@@ -1,5 +1,10 @@
-package logica;
+package logica.estrategia;
 
+import logica.Celda;
+import logica.Jugador;
+import logica.piezas.Peon;
+import logica.piezas.Pieza;
+import logica.piezas.Rey;
 import presentacion.MainPane;
 
 public class JuegoInvertido extends Mediador {

@@ -1,4 +1,6 @@
-package logica;
+package logica.piezas;
+
+import logica.Jugador;
 
 public class Rey extends Pieza {
 	

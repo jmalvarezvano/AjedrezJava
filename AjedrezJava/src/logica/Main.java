@@ -2,6 +2,8 @@ package logica;
 
 import java.util.Scanner;
 
+import logica.estrategia.JuegoEstandar;
+import logica.estrategia.Mediador;
 import presentacion.MainPane;
 
 public class Main {

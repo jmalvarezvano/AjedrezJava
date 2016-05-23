@@ -5,6 +5,8 @@ package logica;
  * prueba dani
  */
 
+import logica.estrategia.Mediador;
+
 public class Tablero {
 	private Celda[][] celdas;
 	private Mediador mediador;

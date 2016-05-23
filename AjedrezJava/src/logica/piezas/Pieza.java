@@ -1,4 +1,7 @@
-package logica;
+package logica.piezas;
+
+import logica.Celda;
+import logica.Jugador;
 
 public abstract class Pieza {
 	
@@ -34,6 +37,10 @@ public abstract class Pieza {
 
 	public void setCelda(Celda celda) {
 		this.celda = celda;
+	}
+
+	public Celda getCelda() {
+		return celda;
 	}
 	
 }
