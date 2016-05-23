@@ -19,7 +19,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import logica.Jugador;
-import logica.JuegoEstandar;
+import logica.Mediador;
 import logica.Pieza;
 
 /**
@@ -28,7 +28,7 @@ import logica.Pieza;
  */
 public class MainPane extends JFrame implements MouseListener{
     ChessBoardPane board_pane;  
-    JuegoEstandar mediador;
+    Mediador mediador;
     JPanel east_pane;
     Resource resource = new Resource();
     Jugador turno;
@@ -42,7 +42,7 @@ public class MainPane extends JFrame implements MouseListener{
     PromotionPane promotion_pane;
     Color bg_color = Color.decode("#efd39c");
     
-    public MainPane(JuegoEstandar mediador){
+    public MainPane(Mediador mediador){
         super("Ajedrez Proyecto DDS");                                  
         setContentPane(main_pane);  
         this.mediador = mediador;
@@ -666,7 +666,7 @@ try{
     /**
      * @param args the command line arguments
      */
-    public static void main(JuegoEstandar mediador) {
+    public static void main(Mediador mediador) {
         // TODO code application logic here
         SwingUtilities.invokeLater(new Runnable(){
             @Override

@@ -1,49 +1,7 @@
 package logica;
 
-import presentacion.MainPane;
-
-public class JuegoEstandar implements Estrategia{
-	private Tablero tablero;
-	private Jugador[] jugadores;
-	private MainPane interfaz;
-	private int turno;
-	private Estrategia estrategia;
-
-	public JuegoEstandar() {
-		jugadores = new Jugador[2];
-		turno = 0;
-	}
-
-	public Tablero getTablero() {
-		return tablero;
-	}
-
-	public void setTablero(Tablero tablero) {
-		this.tablero = tablero;
-	}
-
-	public Jugador getJugador1() {
-		return jugadores[0];
-	}
-
-	public void setJugador1(Jugador jugador1) {
-		this.jugadores[0] = jugador1;
-	}
-
-	public Jugador getJugador2() {
-		return jugadores[1];
-	}
-
-	public void setJugador2(Jugador jugador2) {
-		this.jugadores[1] = jugador2;
-	}
-
-	public void cambiarTurno() {
-		
-		
-		turno = Math.abs(turno-1);
-		interfaz.setTurno(jugadores[turno]);
-	}
+public class JuegoEstandar extends Mediador{
+	
 	
 	public boolean moverPieza(int origenX, int origenY, int destinoX, int destinoY, Jugador j) {
 		Celda origen;
@@ -75,11 +33,11 @@ public class JuegoEstandar implements Estrategia{
 		return false;
 	}
 
-	public void promoverPeon(Celda celda) {
+	private void promoverPeon(Celda celda) {
 		celda.setPieza(interfaz.promoverPeon());		
 	}
 
-	public boolean movimientoValido(int origenX, int origenY, int destinoX, int destinoY, int tipo) {
+	private boolean movimientoValido(int origenX, int origenY, int destinoX, int destinoY, int tipo) {
 		int xRelativo = Math.abs(destinoX - origenX);
 		int yRelativo = Math.abs(destinoY - origenY);
 		System.out.println(tipo);
@@ -168,21 +126,14 @@ public class JuegoEstandar implements Estrategia{
 		return false;
 	}
 	
-	public boolean isJaqueMate(int origenX, int origenY) {
+	private boolean isJaqueMate(int origenX, int origenY) {
 		for (int x = -1; x < 2; x++)
 			for (int y = -1; y < 2; y++)
 				if (!((Rey)(tablero.getCelda(origenX, origenY).getPieza())).getCeldasDefendidasPorRival()[origenX + x][origenY + y]) return false;
 		return true;
 	}
 	
-	public void setInterfaz(MainPane mainPane) {
-
-		interfaz = mainPane;
-	}
-
-	public Jugador getTurno() {
-		return jugadores[turno];
-	}
+	
 	
 	public boolean ahogado(Jugador jugador,int origenX,int origenY){
 		/*
@@ -195,7 +146,6 @@ public class JuegoEstandar implements Estrategia{
 		return false;
 	}
 
-	@Override
 	public boolean finJuego() {
 		return false;
 	}

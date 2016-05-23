@@ -2,47 +2,9 @@ package logica;
 
 import presentacion.MainPane;
 
-public class JuegoInvertido implements Estrategia {
+public class JuegoInvertido extends Mediador {
 
-	private Tablero tablero;
-	private Jugador[] jugadores;
-	private MainPane interfaz;
-	private int turno;
-	private Estrategia estrategia;
 
-	public JuegoInvertido() {
-		jugadores = new Jugador[2];
-		turno = 0;
-	}
-
-	public Tablero getTablero() {
-		return tablero;
-	}
-
-	public void setTablero(Tablero tablero) {
-		this.tablero = tablero;
-	}
-
-	public Jugador getJugador1() {
-		return jugadores[0];
-	}
-
-	public void setJugador1(Jugador jugador1) {
-		this.jugadores[0] = jugador1;
-	}
-
-	public Jugador getJugador2() {
-		return jugadores[1];
-	}
-
-	public void setJugador2(Jugador jugador2) {
-		this.jugadores[1] = jugador2;
-	}
-
-	public void cambiarTurno() {
-		turno = Math.abs(turno-1);
-		interfaz.setTurno(jugadores[turno]);
-	}
 	
 	public boolean moverPieza(int origenX, int origenY, int destinoX, int destinoY, Jugador j) {
 		Celda origen;
@@ -167,22 +129,19 @@ public class JuegoInvertido implements Estrategia {
 		return true;
 	}
 	
-	public void setInterfaz(MainPane mainPane) {
-
-		interfaz = mainPane;
-	}
+	
 
 	public Jugador getTurno() {
 		return jugadores[turno];
 	}
 
-	@Override
+	
 	public boolean finJuego() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
+	
 	public void promoverPeon(Celda celda) {
 		celda.setPieza(interfaz.promoverPeon());		
 	}

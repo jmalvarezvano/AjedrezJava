@@ -25,8 +25,8 @@ public class Main {
 		celdas[0][0].setPieza(fabricaPiezas.crear("torre", j1));
 	}
 	public static void prueba2() {
-		Scanner in = new Scanner(System.in);
-		JuegoEstandar mediador = new JuegoEstandar();		
+		//Scanner in = new Scanner(System.in);
+		Mediador mediador = new JuegoEstandar();		
 		Jugador j1 = new Jugador(mediador);
 		Jugador j2 = new Jugador(mediador);
 		mediador.setJugador1(j1);

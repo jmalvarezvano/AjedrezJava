@@ -7,12 +7,12 @@ package logica;
 
 public class Tablero {
 	private Celda[][] celdas;
-	private JuegoEstandar mediador;
+	private Mediador mediador;
 	Fabrica fabricaPiezas;
 	boolean puebaDani;
 	int prueba = 5;
 	
-	public Tablero(JuegoEstandar m) {
+	public Tablero(Mediador m) {
 		mediador = m;
 		fabricaPiezas = FabricaPiezas.getSingleton();
 		//this.inicializarTablero(mediador.getJugador1(), mediador.getJugador2());
@@ -71,11 +71,11 @@ public class Tablero {
 		this.celdas = celdas;
 	}
 
-	public JuegoEstandar getMediador() {
+	public Mediador getMediador() {
 		return mediador;
 	}
 
-	public void setMediador(JuegoEstandar mediador) {
+	public void setMediador(Mediador mediador) {
 		this.mediador = mediador;
 	}
 	
