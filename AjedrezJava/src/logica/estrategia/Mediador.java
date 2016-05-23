@@ -59,6 +59,7 @@ public abstract class Mediador implements Estrategia, Subject {
 
 	protected void cambiarTurno() {
 		turno = Math.abs(turno-1);
+		actualizarTurnoInterfaz();
 	}
 	
 }

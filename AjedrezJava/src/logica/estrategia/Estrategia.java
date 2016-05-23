@@ -3,7 +3,6 @@ package logica.estrategia;
 import logica.Jugador;
 import logica.Movimiento;
 import logica.Tablero;
-import presentacion.MainPane;
 
 public interface Estrategia {
 		
