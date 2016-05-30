@@ -20,7 +20,7 @@ public class Tablero {
 		//this.inicializarTablero(mediador.getJugador1(), mediador.getJugador2());
 	}
 	
-	public void inicializarTablero(Jugador j1, Jugador j2) {
+	public void inicializarTableroEstandar(Jugador j1, Jugador j2) {
 		
 		celdas = new Celda[8][8];
 		for(int i = 0; i < 8; i++) 
@@ -49,6 +49,14 @@ public class Tablero {
 		celdas[5][7].setPieza(fabricaPiezas.crear("alfil", j2));		
 	}
 
+	public void inicializarTableroInvertido(Jugador j1, Jugador j2) {
+		this.inicializarTableroEstandar(j1, j2);
+	}
+	
+	public void inicializarTableroDamas(Jugador j1, Jugador j2) {
+		//a implementar
+	}
+	
 	
 	//toString para pruebas en consola
 	@Override

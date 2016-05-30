@@ -5,6 +5,9 @@ import logica.Subject;
 import logica.Tablero;
 import presentacion.MainPane;
 
+
+//Actualizar el método actionPerformed() de la clase PreferencesPane al añadir nuevos modos de juego
+
 public abstract class Mediador implements Estrategia, Subject {
 
 	protected Tablero tablero;
@@ -46,7 +49,14 @@ public abstract class Mediador implements Estrategia, Subject {
 	}
 	
 	public void juegoNuevo() {
-		tablero.inicializarTablero(jugadores[0], jugadores[1]);
+		
+		Jugador j1 = new Jugador(this);
+		Jugador j2 = new Jugador(this);
+		this.setJugador1(j1);
+		this.setJugador2(j2);
+		this.setTablero(new Tablero(this));
+		turno = 0;
+		this.actualizarTurnoInterfaz();
 	}
 
 	public Jugador getJugador2() {

@@ -152,7 +152,13 @@ public class JuegoEstandar extends Mediador{
 		}*/
 		return false;
 	}
-
+	
+	@Override
+	public void juegoNuevo() {
+		super.juegoNuevo();
+		tablero.inicializarTableroEstandar(jugadores[0], jugadores[1]);
+	}
+	
 	public boolean finJuego() {
 		return false;
 	}
