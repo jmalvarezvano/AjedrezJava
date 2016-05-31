@@ -1,6 +1,7 @@
 package logica.estrategia;
 
 import logica.Celda;
+import logica.FabricaPiezas;
 import logica.Jugador;
 import logica.Movimiento;
 import logica.piezas.Peon;
@@ -13,13 +14,10 @@ public class JuegoEstandar extends Mediador {
 	public boolean moverPieza(Movimiento movimiento) {
 		Celda origen;
 		Celda destino;
-		try {
-			origen = tablero.getCelda(movimiento.origenX, movimiento.origenY);
-			destino = tablero.getCelda(movimiento.destinoX, movimiento.destinoY);
-		} catch (Exception e) {
-			System.out.println("1");
-			return false;
-		}
+		
+		origen = tablero.getCelda(movimiento.origenX, movimiento.origenY);
+		destino = tablero.getCelda(movimiento.destinoX, movimiento.destinoY);
+		
 		System.out.println(origen + " to " + destino);
 		if (origen.getPieza() == null || !origen.getPieza().getJugador().equals(movimiento.jugador))
 			return false; // pieza origen existe y es del mismo jugador
@@ -50,7 +48,28 @@ public class JuegoEstandar extends Mediador {
 	}
 
 	private void promoverPeon(Celda celda) {
-		celda.setPieza(interfaz.promoverPeon());
+		boolean esBlanco = celda.getPieza().getJugador().equals(jugadores[0]);
+		int tipoNuevaPieza = interfaz.promoverPeon(esBlanco);
+		Pieza nuevaPieza = null;
+
+		/*cambiando la fabrica para que funcione con tipos de piezas en lugar de string
+		 * se puede evitar este switch
+		 */
+		switch (tipoNuevaPieza) {
+		case Pieza.BISHOP:
+			nuevaPieza = FabricaPiezas.getSingleton().crear("alfil", celda.getPieza().getJugador());
+			break;
+		case Pieza.KNIGHT:
+			nuevaPieza = FabricaPiezas.getSingleton().crear("caballo", celda.getPieza().getJugador());
+			break;
+		case Pieza.QUEEN:
+			nuevaPieza = FabricaPiezas.getSingleton().crear("reina", celda.getPieza().getJugador());
+			break;
+		case Pieza.ROOK:
+			nuevaPieza = FabricaPiezas.getSingleton().crear("torre", celda.getPieza().getJugador());
+			break;
+		}
+		celda.setPieza(nuevaPieza);
 	}
 
 	private boolean movimientoValido(Movimiento movimiento, int tipoPieza) {

@@ -38,14 +38,13 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 	JLabel new_game, quit, about, history, first, prev, next, last;
 	JPanel main_pane = new JPanel(new BorderLayout());
 	PreferencesPane play_options;
-	PromotionPane promotion_pane;
 	Color bg_color = Color.decode("#efd39c");
 
 	public MainPane() {
 		super("Ajedrez Proyecto DDS");
 		setContentPane(main_pane);
 		// position = new Position();
-		promotion_pane = new PromotionPane(this);
+		
 		System.out.println(mediador);
 		loadMenuIcons();
 		loadBoardImages();
@@ -137,7 +136,6 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 
 		mediador.juegoNuevo();
 		loadPieceImages();
-		promotion_pane.setIcons(true);
 		board_pane.newGame();
 		board_pane.repaint();
 
@@ -624,9 +622,11 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 
 	}
 
-	public Pieza promoverPeon() {
-		// TODO Auto-generated method stub
-		return null;
+	public int promoverPeon(boolean esBlanco) {
+		PromotionPane promotion_pane = new PromotionPane(this);
+		promotion_pane.setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
+		promotion_pane.setIcons(esBlanco);
+		return promotion_pane.showDialog();
 	}
 
 }

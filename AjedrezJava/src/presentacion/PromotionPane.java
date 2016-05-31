@@ -15,12 +15,11 @@ import logica.piezas.Pieza;
  * @author Melvic
  */
 public class PromotionPane extends JDialog implements ActionListener{
-    int index;
-    int location;
     JPanel main_pane;
     MainPane chessmate;
     Resource resource;
-
+    int promotion_piece;
+    
     public PromotionPane(MainPane chessmate){
         setTitle("New Piece");
         this.chessmate = chessmate;
@@ -40,7 +39,7 @@ public class PromotionPane extends JDialog implements ActionListener{
         setResizable(false);
         addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
-                resumeGame(Pieza.QUEEN);
+                promotion_piece = Pieza.QUEEN;
             }
         });
     }
@@ -56,11 +55,14 @@ public class PromotionPane extends JDialog implements ActionListener{
         setLocationRelativeTo(null);
     }
     public void actionPerformed(ActionEvent e){
-        int promotion_piece = Integer.parseInt(e.getActionCommand());
+        promotion_piece = Integer.parseInt(e.getActionCommand());
         setVisible(false);
-        resumeGame(promotion_piece);
+        dispose();
     }
-    public void resumeGame(int promotion_piece){  
-      
+    
+    public int showDialog() {
+    	setVisible(true);
+    	return promotion_piece;
     }
+   
 }
