@@ -19,12 +19,13 @@ public class PromotionPane extends JDialog implements ActionListener{
     int location;
     JPanel main_pane;
     MainPane chessmate;
+    Resource resource;
 
     public PromotionPane(MainPane chessmate){
         setTitle("New Piece");
         this.chessmate = chessmate;
         main_pane = new JPanel(new GridLayout(1,4,10,0));
-        Resource resource = new Resource();
+        resource = new Resource();
 
         int[] cmdActions = {
             Pieza.QUEEN,Pieza.ROOK,Pieza.BISHOP,Pieza.KNIGHT
@@ -45,7 +46,6 @@ public class PromotionPane extends JDialog implements ActionListener{
     }
     public void setIcons(boolean white){
         Component[] components = main_pane.getComponents();
-        Resource resource = new Resource();
         String[] resourceStrings = {"q","r","b","n"};
         for(int i=0; i<components.length; i++){
             JButton button = (JButton)components[i];
@@ -61,9 +61,6 @@ public class PromotionPane extends JDialog implements ActionListener{
         resumeGame(promotion_piece);
     }
     public void resumeGame(int promotion_piece){  
-//        chessmate.position.human_pieces[index] = new Piece(promotion_piece,location);
-//        chessmate.newHistoryPosition();
-//        chessmate.board_pane.repaint();
-//        chessmate.state = GameData.COMPUTER_MOVE;
+      
     }
 }

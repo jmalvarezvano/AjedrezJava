@@ -2,7 +2,7 @@ package logica.estrategia;
 
 import logica.Jugador;
 import logica.Subject;
-import logica.Tablero;
+import logica.recuerdo.Tablero;
 import presentacion.MainPane;
 
 
@@ -57,8 +57,11 @@ public abstract class Mediador implements Estrategia, Subject {
 		this.setTablero(new Tablero(this));
 		turno = 0;
 		this.actualizarTurnoInterfaz();
+		this.inicializarTablero();
 	}
 
+	public abstract void inicializarTablero();
+	
 	public Jugador getJugador2() {
 		return jugadores[1];
 	}

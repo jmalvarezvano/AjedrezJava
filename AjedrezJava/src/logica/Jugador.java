@@ -2,15 +2,15 @@ package logica;
 
 import java.util.ArrayList;
 
-import logica.estrategia.Mediador;
+import logica.estrategia.Estrategia;
 import logica.piezas.Pieza;
 
 public class Jugador {
 	
 	private ArrayList<Pieza> piezas;
-	private Mediador mediador;	 
+	private Estrategia mediador;	 
 	
-	public Jugador(Mediador m) {
+	public Jugador(Estrategia m) {
 		piezas = new ArrayList<Pieza>();
 		mediador = m;
 	}	
@@ -19,11 +19,11 @@ public class Jugador {
 		return mediador.moverPieza(new Movimiento(origenX, origenY, destinoX, destinoY, this));
 	}
 
-	public Mediador getMediador() {
+	public Estrategia getMediador() {
 		return mediador;
 	}
 
-	public void setMediador(Mediador mediador) {
+	public void setMediador(Estrategia mediador) {
 		this.mediador = mediador;
 	}
 
