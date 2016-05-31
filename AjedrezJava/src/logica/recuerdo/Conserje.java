@@ -24,6 +24,11 @@ public class Conserje {
 
 	public Memento get(int index) {
 		return mementoList.get(index);
+		
+	}
+	
+	public int numEstadosGuardados() {
+		return mementoList.size();
 	}
 
 	public void reset() {

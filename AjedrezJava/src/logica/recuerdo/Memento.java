@@ -1,17 +1,17 @@
 package logica.recuerdo;
 
-import logica.Celda;
+import logica.piezas.Pieza;
 
 public class Memento {
 	
-	private Celda[][] state;
+	private Pieza[][] state;
 
-	   public Memento(Celda[][] state){
-	      this.state = state;
+	   public Memento(Pieza[][] state){
+	      this.state = state; 	     
 	   }
 
-	   public Celda[][] getState(){
+	   public Pieza[][] getState(){
 	      return state;
-	   }
-
+	   }	   
+	  
 }

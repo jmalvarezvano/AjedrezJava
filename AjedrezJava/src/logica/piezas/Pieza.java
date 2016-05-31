@@ -1,6 +1,5 @@
 package logica.piezas;
 
-import logica.Celda;
 import logica.Jugador;
 
 public abstract class Pieza {
@@ -9,12 +8,11 @@ public abstract class Pieza {
     public final static int KNIGHT = 320;
     public final static int BISHOP = 325;
     public final static int ROOK = 500;
-    public final static int QUEEN = 900;
-    public final static int KING = 1000000;   
+    public final static int QUEEN = 9001;
+    public final static int KING = 1337;   
 
 	private int tipo;
 	private Jugador jugador;
-	private Celda celda;
 	
 	public Pieza(Jugador j, int m) {
 		jugador = j;
@@ -34,13 +32,4 @@ public abstract class Pieza {
 		this.jugador = jugador;
 	}
 
-
-	public void setCelda(Celda celda) {
-		this.celda = celda;
-	}
-
-	public Celda getCelda() {
-		return celda;
-	}
-	
 }

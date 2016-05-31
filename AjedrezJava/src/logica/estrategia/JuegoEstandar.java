@@ -1,6 +1,5 @@
 package logica.estrategia;
 
-import logica.Celda;
 import logica.FabricaPiezas;
 import logica.Jugador;
 import logica.Movimiento;
@@ -12,34 +11,36 @@ import logica.recuerdo.Conserje;
 public class JuegoEstandar extends Mediador {
 
 	public boolean moverPieza(Movimiento movimiento) {
-		Celda origen;
-		Celda destino;
+		Pieza origen;
+		Pieza destino;
 		
-		origen = tablero.getCelda(movimiento.origenX, movimiento.origenY);
-		destino = tablero.getCelda(movimiento.destinoX, movimiento.destinoY);
+		origen = tablero.getPieza(movimiento.origenX, movimiento.origenY);
+		destino = tablero.getPieza(movimiento.destinoX, movimiento.destinoY);
 		
 		System.out.println(origen + " to " + destino);
-		if (origen.getPieza() == null || !origen.getPieza().getJugador().equals(movimiento.jugador))
+		if (origen == null || !origen.getJugador().equals(movimiento.jugador))
 			return false; // pieza origen existe y es del mismo jugador
 		// if (((Rey)tablero.getCelda(origenX, origenY).getPieza()).isJaque() &&
 		// !(origen.getPieza() instanceof Rey)) return false; //comprobar
 		// jaque(tiene que mover el rey)
-		if (destino.getPieza() != null && destino.getPieza().getJugador().equals(movimiento.jugador))
+		if (destino != null && destino.getJugador().equals(movimiento.jugador))
 			return false; // si pieza destino existe tiene que ser del otro
 							// jugador
 		
-		if (movimientoValido(movimiento, origen.getPieza().getTipo())) {			
-			destino.setPieza(origen.quitarPieza());
-			if (destino.getPieza().getTipo() == Pieza.PAWN) {
+		if (movimientoValido(movimiento, origen.getTipo())) {	
+			tablero.quitarPieza(movimiento.origenX, movimiento.origenY);
+			tablero.setPieza(movimiento.destinoX, movimiento.destinoY, origen);
+			if (origen.getTipo() == Pieza.PAWN) {
 				if (movimiento.jugador == jugadores[0] && movimiento.destinoY == 7)
-					promoverPeon(destino);
+					tablero.setPieza(movimiento.destinoX, movimiento.destinoY, promoverPeon(origen.getJugador()));
 				if (movimiento.jugador == jugadores[1] && movimiento.destinoY == 0)
-					promoverPeon(destino);
+					tablero.setPieza(movimiento.destinoX, movimiento.destinoY, promoverPeon(origen.getJugador()));
 			}
+			
 			Conserje.getSingleton().add(tablero.saveStateToMemento());  //guardar estado
 			cambiarTurno();
-			if (destino.getPieza().getTipo() == Pieza.PAWN && ((Peon) destino.getPieza()).isPrimerMovimiento()) {
-				((Peon) destino.getPieza()).setPrimerMovimiento(false);
+			if (origen.getTipo() == Pieza.PAWN && ((Peon) origen).isPrimerMovimiento()) {
+				((Peon) origen).setPrimerMovimiento(false);
 				System.out.println("actualizar peon");
 			}
 			return true;
@@ -47,8 +48,8 @@ public class JuegoEstandar extends Mediador {
 		return false;
 	}
 
-	private void promoverPeon(Celda celda) {
-		boolean esBlanco = celda.getPieza().getJugador().equals(jugadores[0]);
+	private Pieza promoverPeon(Jugador jugador) {
+		boolean esBlanco = jugador.equals(jugadores[0]);
 		int tipoNuevaPieza = interfaz.promoverPeon(esBlanco);
 		Pieza nuevaPieza = null;
 
@@ -57,19 +58,19 @@ public class JuegoEstandar extends Mediador {
 		 */
 		switch (tipoNuevaPieza) {
 		case Pieza.BISHOP:
-			nuevaPieza = FabricaPiezas.getSingleton().crear("alfil", celda.getPieza().getJugador());
+			nuevaPieza = FabricaPiezas.getSingleton().crear("alfil", jugador);
 			break;
 		case Pieza.KNIGHT:
-			nuevaPieza = FabricaPiezas.getSingleton().crear("caballo", celda.getPieza().getJugador());
+			nuevaPieza = FabricaPiezas.getSingleton().crear("caballo", jugador);
 			break;
 		case Pieza.QUEEN:
-			nuevaPieza = FabricaPiezas.getSingleton().crear("reina", celda.getPieza().getJugador());
+			nuevaPieza = FabricaPiezas.getSingleton().crear("reina", jugador);
 			break;
 		case Pieza.ROOK:
-			nuevaPieza = FabricaPiezas.getSingleton().crear("torre", celda.getPieza().getJugador());
+			nuevaPieza = FabricaPiezas.getSingleton().crear("torre", jugador);
 			break;
 		}
-		celda.setPieza(nuevaPieza);
+		return nuevaPieza;
 	}
 
 	private boolean movimientoValido(Movimiento movimiento, int tipoPieza) {
@@ -101,7 +102,7 @@ public class JuegoEstandar extends Mediador {
 		if (xRelativo == yRelativo) {
 			for (int x = movimiento.origenX + 1, y = movimiento.origenY + 1; x < movimiento.destinoX
 					&& y < movimiento.destinoY; x++, y++) {
-				if (tablero.getCelda(x, y).getPieza() != null)
+				if (tablero.getPieza(x, y) != null)
 					return false;
 			}
 			return true;
@@ -118,10 +119,10 @@ public class JuegoEstandar extends Mediador {
 	private boolean esMovimientoValidoPeon(Movimiento movimiento) {
 		int xRelativo = Math.abs(movimiento.destinoX - movimiento.origenX);
 		int yRelativo = Math.abs(movimiento.destinoY - movimiento.origenY);
-		if (((Peon) tablero.getCelda(movimiento.origenX, movimiento.origenY).getPieza()).isPrimerMovimiento()) {
+		if (((Peon) tablero.getPieza(movimiento.origenX, movimiento.origenY)).isPrimerMovimiento()) {
 
 			int aux;
-			if (tablero.getCelda(movimiento.origenX, movimiento.origenY).getPieza().getJugador().equals(jugadores[0])) {
+			if (tablero.getPieza(movimiento.origenX, movimiento.origenY).getJugador().equals(jugadores[0])) {
 				if (movimiento.origenY >= movimiento.destinoY)
 					return false;
 				aux = 1;
@@ -132,17 +133,17 @@ public class JuegoEstandar extends Mediador {
 			}
 
 			if (xRelativo == 0)
-				if (yRelativo == 1 && tablero.getCelda(movimiento.destinoX, movimiento.destinoY).getPieza() == null)
+				if (yRelativo == 1 && tablero.getPieza(movimiento.destinoX, movimiento.destinoY) == null)
 					return true;
 				else
 					return (yRelativo == 2
-							&& tablero.getCelda(movimiento.origenX, movimiento.origenY + aux).getPieza() == null);
+							&& tablero.getPieza(movimiento.origenX, movimiento.origenY + aux) == null);
 			else
 				return (xRelativo == 1 && yRelativo == 1
-						&& tablero.getCelda(movimiento.destinoX, movimiento.destinoY).getPieza() != null);
+						&& tablero.getPieza(movimiento.destinoX, movimiento.destinoY) != null);
 
 		} else {
-			if (tablero.getCelda(movimiento.origenX, movimiento.origenY).getPieza().getJugador().equals(jugadores[0])) {
+			if (tablero.getPieza(movimiento.origenX, movimiento.origenY).getJugador().equals(jugadores[0])) {
 				if (movimiento.origenY >= movimiento.destinoY)
 					return false;
 			} else {
@@ -150,11 +151,11 @@ public class JuegoEstandar extends Mediador {
 					return false;
 			}
 			if (xRelativo == 0) {
-				if (yRelativo == 1 && tablero.getCelda(movimiento.destinoX, movimiento.destinoY).getPieza() == null)
+				if (yRelativo == 1 && tablero.getPieza(movimiento.destinoX, movimiento.destinoY) == null)
 					return true;
 			} else
 				return (xRelativo == 1 && (yRelativo == 1)
-						&& tablero.getCelda(movimiento.destinoX, movimiento.destinoY).getPieza() != null);
+						&& tablero.getPieza(movimiento.destinoX, movimiento.destinoY) != null);
 		}
 		return false;
 	}
@@ -163,7 +164,7 @@ public class JuegoEstandar extends Mediador {
 		int xRelativo = Math.abs(movimiento.destinoX - movimiento.origenX);
 		int yRelativo = Math.abs(movimiento.destinoY - movimiento.origenY);
 
-		Rey rey = (Rey) tablero.getCelda(movimiento.origenX, movimiento.origenY).getPieza();
+		Rey rey = (Rey) tablero.getPieza(movimiento.origenX, movimiento.origenY);
 		if (rey.isJaque()) {
 			if (rey.getCeldasDefendidasPorRival()[movimiento.destinoX][movimiento.destinoY])
 				return false;
@@ -182,12 +183,12 @@ public class JuegoEstandar extends Mediador {
 		int yRelativo = Math.abs(movimiento.destinoY - movimiento.origenY);
 		if (xRelativo == 0) {
 			for (int y = movimiento.origenY + 1; y < movimiento.destinoY; y++)
-				if (tablero.getCelda(movimiento.origenX, y).getPieza() != null)
+				if (tablero.getPieza(movimiento.origenX, y) != null)
 					return false;
 			return true;
 		} else if (yRelativo == 0) {
 			for (int x = movimiento.origenX + 1; x < movimiento.destinoX; x++)
-				if (tablero.getCelda(x, movimiento.origenY).getPieza() != null)
+				if (tablero.getPieza(x, movimiento.origenY) != null)
 					return false;
 			return true;
 		}
@@ -197,7 +198,7 @@ public class JuegoEstandar extends Mediador {
 	private boolean isJaqueMate(int origenX, int origenY) {
 		for (int x = -1; x < 2; x++)
 			for (int y = -1; y < 2; y++)
-				if (!((Rey) (tablero.getCelda(origenX, origenY).getPieza())).getCeldasDefendidasPorRival()[origenX
+				if (!((Rey) (tablero.getPieza(origenX, origenY))).getCeldasDefendidasPorRival()[origenX
 						+ x][origenY + y])
 					return false;
 		return true;

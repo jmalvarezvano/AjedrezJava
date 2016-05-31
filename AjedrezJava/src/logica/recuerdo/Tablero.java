@@ -5,51 +5,52 @@ package logica.recuerdo;
  * prueba dani
  */
 
-import logica.Celda;
 import logica.Fabrica;
 import logica.FabricaPiezas;
 import logica.Jugador;
 import logica.estrategia.Mediador;
+import logica.piezas.Pieza;
 
 public class Tablero {
-	private Celda[][] celdas;
+	private Pieza[][] piezas;
 	private Mediador mediador;
 	Fabrica fabricaPiezas;
 
 	public Tablero(Mediador m) {
 		mediador = m;
 		fabricaPiezas = FabricaPiezas.getSingleton();
-		// this.inicializarTablero(mediador.getJugador1(),
-		// mediador.getJugador2());
 	}
 
 	public void inicializarTableroEstandar(Jugador j1, Jugador j2) {
 
-		celdas = new Celda[8][8];
-		for (int i = 0; i < 8; i++)
-			for (int j = 0; j < 8; j++)
-				celdas[i][j] = new Celda();
+		piezas = new Pieza[8][8];
+		
+//		for (int i = 0; i < 8; i++)
+//			for (int j = 0; j < 8; j++)
+//				piezas[i][j] = new Pieza();
 
-		celdas[0][0].setPieza(fabricaPiezas.crear("torre", j1));
-		celdas[0][7].setPieza(fabricaPiezas.crear("torre", j2));
-		celdas[7][0].setPieza(fabricaPiezas.crear("torre", j1));
-		celdas[7][7].setPieza(fabricaPiezas.crear("torre", j2));
-		celdas[4][0].setPieza(fabricaPiezas.crear("rey", j1));
-		celdas[4][7].setPieza(fabricaPiezas.crear("rey", j2));
-		celdas[3][0].setPieza(fabricaPiezas.crear("reina", j1));
-		celdas[3][7].setPieza(fabricaPiezas.crear("reina", j2));
+		piezas[0][0] = fabricaPiezas.crear("torre", j1);
+		piezas[0][7] = fabricaPiezas.crear("torre", j2);
+		piezas[7][0] = fabricaPiezas.crear("torre", j1);
+		piezas[7][7] = fabricaPiezas.crear("torre", j2);
+		piezas[4][0] = fabricaPiezas.crear("rey", j1);
+		piezas[4][7] = fabricaPiezas.crear("rey", j2);
+		piezas[3][0] = fabricaPiezas.crear("reina", j1);
+		piezas[3][7] = fabricaPiezas.crear("reina", j2);
 		for (int i = 0; i < 8; i++) {
-			celdas[i][1].setPieza(fabricaPiezas.crear("peon", j1));
-			celdas[i][6].setPieza(fabricaPiezas.crear("peon", j2));
+			piezas[i][1] = fabricaPiezas.crear("peon", j1);
+			piezas[i][6] = fabricaPiezas.crear("peon", j2);
 		}
-		celdas[1][0].setPieza(fabricaPiezas.crear("caballo", j1));
-		celdas[6][0].setPieza(fabricaPiezas.crear("caballo", j1));
-		celdas[1][7].setPieza(fabricaPiezas.crear("caballo", j2));
-		celdas[6][7].setPieza(fabricaPiezas.crear("caballo", j2));
-		celdas[2][0].setPieza(fabricaPiezas.crear("alfil", j1));
-		celdas[5][0].setPieza(fabricaPiezas.crear("alfil", j1));
-		celdas[2][7].setPieza(fabricaPiezas.crear("alfil", j2));
-		celdas[5][7].setPieza(fabricaPiezas.crear("alfil", j2));
+		piezas[1][0] = fabricaPiezas.crear("caballo", j1);
+		piezas[6][0] = fabricaPiezas.crear("caballo", j1);
+		piezas[1][7] = fabricaPiezas.crear("caballo", j2);
+		piezas[6][7] = fabricaPiezas.crear("caballo", j2);
+		piezas[2][0] = fabricaPiezas.crear("alfil", j1);
+		piezas[5][0] = fabricaPiezas.crear("alfil", j1);
+		piezas[2][7] = fabricaPiezas.crear("alfil", j2);
+		piezas[5][7] = fabricaPiezas.crear("alfil", j2);
+		
+		Conserje.getSingleton().add(this.saveStateToMemento());
 	}
 
 	public void inicializarTableroInvertido(Jugador j1, Jugador j2) {
@@ -67,7 +68,7 @@ public class Tablero {
 		for (int i = 7; i >= 0; i--) {
 			out += "\n" + i;
 			for (int j = 0; j <= 7; j++)
-				out += " " + celdas[j][i];
+				out += " " + piezas[j][i];
 		}
 		out += "\n ";
 		for (int j = 0; j <= 7; j++)
@@ -75,22 +76,35 @@ public class Tablero {
 		return out;
 	}
 
-	public Celda[][] getCeldas() {
-		return celdas;
+	public Pieza[][] getPiezas() {
+		return piezas;
 	}
 
-	public void setCeldas(Celda[][] celdas) {
-		this.celdas = celdas;
+	public void setPiezas(Pieza[][] piezas) {
+		this.piezas = piezas;
+	}
+	
+	public void setPieza(int x, int y, Pieza p) {
+		piezas[x][y] = p;
+	}
+	
+	public void quitarPieza(int  x, int y) {
+		piezas[x][y] = null;
 	}
 	
 	
 	//patrón Memento
 	public Memento saveStateToMemento() {
-		return new Memento(celdas.clone());
+		Pieza[][] res = new Pieza[8][8];
+		for (int i = 0; i <= 7; i++) {			
+			for (int j = 0; j <= 7; j++)
+				res[i][j] = piezas[i][j];
+		}
+		return new Memento(res);
 	}
 
 	public void getStateFromMemento(Memento Memento) {
-		celdas = Memento.getState();
+		piezas = Memento.getState();
 	}
 	
 
@@ -102,7 +116,7 @@ public class Tablero {
 		this.mediador = mediador;
 	}
 
-	public Celda getCelda(int x, int y) {
-		return celdas[x][y];
+	public Pieza getPieza(int x, int y) {
+		return piezas[x][y];
 	}
 }

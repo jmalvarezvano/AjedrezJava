@@ -22,6 +22,7 @@ import logica.Jugador;
 import logica.Observer;
 import logica.estrategia.Mediador;
 import logica.piezas.Pieza;
+import logica.recuerdo.Conserje;
 
 /**
  *
@@ -29,10 +30,13 @@ import logica.piezas.Pieza;
  */
 public class MainPane extends JFrame implements MouseListener, Observer {
 	ChessBoardPane board_pane;
+	HistoryBoardPane history_pane;
 	Mediador mediador;
 	JPanel east_pane;
 	Resource resource = new Resource();
 	Jugador turno;
+	int indiceHistorial;
+	boolean juegoActivo;
 	Map<Integer, Image> images = new HashMap<Integer, Image>();
 	Map<Integer, Icon> icon_images = new HashMap<Integer, Icon>();
 	JLabel new_game, quit, about, history, first, prev, next, last;
@@ -43,17 +47,23 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 	public MainPane() {
 		super("Ajedrez Proyecto DDS");
 		setContentPane(main_pane);
-		// position = new Position();
-		
+
 		System.out.println(mediador);
+
 		loadMenuIcons();
 		loadBoardImages();
+
 		board_pane = new ChessBoardPane();
+
 		main_pane.add(createMenuPane(), BorderLayout.WEST);
 		main_pane.add(board_pane, BorderLayout.CENTER);
 		main_pane.setBackground(bg_color);
 		createEastPane();
 		pack();
+
+		Dimension size = getSize();
+		size.height = 523;
+		setSize(size);
 
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -65,17 +75,17 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 	public JPanel createMenuPane() {
 		new_game = new JLabel(icon_images.get(GameData.NEW_BUTTON));
 		about = new JLabel(icon_images.get(GameData.ABOUT_BUTTON));
-		// history = new JLabel(icon_images.get(GameData.HISTORY_BUTTON));
+		history = new JLabel(icon_images.get(GameData.HISTORY_BUTTON));
 		quit = new JLabel(icon_images.get(GameData.QUIT_BUTTON));
 
 		new_game.addMouseListener(this);
 		about.addMouseListener(this);
-		// history.addMouseListener(this);
+		history.addMouseListener(this);
 		quit.addMouseListener(this);
 
 		JPanel pane = new JPanel(new GridLayout(4, 1));
 		pane.add(new_game);
-		// pane.add(history);
+		pane.add(history);
 		pane.add(about);
 		pane.add(quit);
 		pane.setBackground(bg_color);
@@ -92,7 +102,7 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 
 	public void createEastPane() {
 		east_pane = new JPanel(new BorderLayout());
-		// history_pane = new HistoryBoardPane();
+		history_pane = new HistoryBoardPane();
 
 		JPanel pane = new JPanel(new GridLayout(1, 4));
 		first = new JLabel(icon_images.get(GameData.FIRST_BUTTON));
@@ -107,7 +117,7 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 
 		JPanel pane2 = new JPanel();
 		pane2.setLayout(new BoxLayout(pane2, BoxLayout.Y_AXIS));
-		// pane2.add(history_pane);
+		pane2.add(history_pane);
 		pane2.add(pane);
 
 		east_pane.add(pane2, BorderLayout.SOUTH);
@@ -128,11 +138,11 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 	public void newGame(Mediador mediador) {
 		this.mediador = mediador;
 		mediador.setInterfaz(this);
-//		if (!east_pane.isVisible()) {
-//			east_pane.setVisible(true);
-//			pack();
-//			setLocationRelativeTo(null);
-//		}
+		if (!east_pane.isVisible()) {
+			east_pane.setVisible(true);
+			pack();
+			setLocationRelativeTo(null);
+		}
 
 		mediador.juegoNuevo();
 		loadPieceImages();
@@ -224,12 +234,24 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 			pack();
 			setLocationRelativeTo(null);
 		} else if (source == first) {
+			indiceHistorial = 0;
+			history_pane.repaint();
 
 		} else if (source == prev) {
+			if (indiceHistorial > 0) {
+				indiceHistorial--;
+				history_pane.repaint();
+			}
 
 		} else if (source == next) {
+			if (indiceHistorial < Conserje.getSingleton().numEstadosGuardados() - 1) {
+				indiceHistorial++;
+				history_pane.repaint();
+			}
 
 		} else if (source == last) {
+			indiceHistorial = Conserje.getSingleton().numEstadosGuardados() - 1;
+			history_pane.repaint();
 
 		}
 	}
@@ -291,10 +313,10 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 	public class ChessBoardPane extends JPanel implements MouseListener {
 		Image animating_image;
 		int origenX, origenY, destinoX, destinoY;
-		boolean segundoClick, seleccionandoPieza, juegoActivo;
+		boolean segundoClick, seleccionandoPieza;
 
 		public ChessBoardPane() {
-			setPreferredSize(new Dimension(460, 500));
+			setPreferredSize(new Dimension(450, 495));
 			setBackground(bg_color);
 			addMouseListener(this);
 		}
@@ -303,12 +325,16 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 			segundoClick = false;
 			seleccionandoPieza = false;
 			juegoActivo = true;
+			indiceHistorial = 0;
+			history_pane.repaint();
 		}
 
 		// dibujar tabla
 		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
+			g.drawImage(images.get(GameData.MYCHESSMATE), 20, 36, this);
+
 			g.drawImage(images.get(GameData.BOARD_IMAGE), 20, 65, this);
 			if (juegoActivo) {
 				if (turno == mediador.getJugador1())
@@ -333,7 +359,7 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 						for (int j = 90; j <= 405; j += 45) {
 							x = i;
 							y = j;
-							pieza = mediador.getTablero().getCelda((i - 45) / 45, 7 - (j - 90) / 45).getPieza();
+							pieza = mediador.getTablero().getPieza((i - 45) / 45, 7 - (j - 90) / 45);
 							if (pieza != null) {
 								if (pieza.getJugador().equals(mediador.getJugador1())) {
 									g.drawImage(images.get(pieza.getTipo()), i, j, this);
@@ -348,75 +374,37 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 					System.out.println("i: " + x + " j: " + y);
 				}
 			}
-			// for (int i = 0; i < position.board.length-11; i++) {
-			// if (position.board[i] == GameData.ILLEGAL) continue;
-			// int x = i%10;
-			// int y = (i-x)/10;
-			//
-			// if (piece_selected && i == move.source_location) {
-			// g.drawImage(images.get(GameData.GLOW), x * 45, y * 45,this);
-			// }else if(!piece_selected && move.destination == i &&
-			// (position.board[i]==GameData.EMPTY || position.board[i]<0)){
-			// g.drawImage(images.get(GameData.GLOW2), x * 45, y * 45, this);
-			// }
-			//
-			// if (position.board[i] == GameData.EMPTY) continue;
-			//
-			// if(state == GameData.ANIMATING && i==move.source_location)
-			// continue;
-			// if (position.board[i] > 0) {
-			// int piece = position.human_pieces[position.board[i]].value;
-			// g.drawImage(images.get(piece),x*45,y*45,this);
-			// }else{
-			// int piece = position.computer_pieces[-position.board[i]].value;
-			// g.drawImage(images.get(-piece),x*45,y*45,this);
-			// }
-			//// }
-			// if(state == GameData.ANIMATING){
-			// g.drawImage(animating_image,movingX,movingY,this);
-			// }
+
 		}
 
-		// es la clave
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			if (juegoActivo) {
 
 				Point p = e.getPoint();
+				int xActual = (int) (p.getX() - 45) / 45;
+				int yActual = (int) (8 - (p.getY() - 90) / 45);
+
 				System.out.println("x: " + p.getX() + " y: " + p.getY());
 				if (segundoClick) {
-					destinoX = (int) (p.getX() - 45) / 45;
-					destinoY = (int) (8 - (p.getY() - 90) / 45);
+					destinoX = xActual;
+					destinoY = yActual;
 
 					turno.moverPieza(origenX, origenY, destinoX, destinoY);
+					indiceHistorial = Conserje.getSingleton().numEstadosGuardados() - 1;
 					segundoClick = false;
 					seleccionandoPieza = false;
 					System.out.println(origenX + " " + origenY + " to " + destinoX + " " + destinoY);
 				} else {
 					seleccionandoPieza = true;
-					origenX = (int) (p.getX() - 45) / 45;
-					origenY = (int) (8 - (p.getY() - 90) / 45);
+					origenX = xActual;
+					origenY = yActual;
 					segundoClick = true;
 
 				}
+				history_pane.repaint();
 				repaint();
 			}
-
-			// if(state != GameData.HUMAN_MOVE) return;
-			// int location = boardValue(e.getY())*10+boardValue(e.getX());
-			// if(position.board[location] == GameData.ILLEGAL) return;
-			// if((!piece_selected || position.board[location]>0) &&
-			// position.board[location] != GameData.EMPTY){
-			// if(position.board[location]>0){
-			// piece_selected = true;
-			// move.source_location = location;
-			// }
-			// }else if(piece_selected && validMove(location)){
-			// piece_selected = false;
-			// move.destination = location;
-			// state = GameData.PREPARE_ANIMATION;
-			// }
-			// repaint();
 		}
 
 		@Override
@@ -436,34 +424,94 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 		}
 	}
 
-	// public class HistoryBoardPane extends JPanel{
-	// public HistoryBoardPane(){
-	// setBackground(bg_color);
-	// setPreferredSize(new Dimension(300,330));
-	// }
-	// @Override
-	// public void paintComponent(Graphics g){
+	public class HistoryBoardPane extends JPanel implements MouseListener {
+		public HistoryBoardPane() {
+			setBackground(bg_color);
+			setPreferredSize(new Dimension(300, 330));
+			addMouseListener(this);
+
+		}
+
+		@Override
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			g.drawImage(images.get(GameData.HISTORY_TITLE), 20, 15, this);
+			g.drawImage(images.get(GameData.BOARD_IMAGE2), 14, 44, this);
+			if (juegoActivo) {
+				System.out.println("indiceHistorial: " + indiceHistorial);
+				Pieza[][] celdas = Conserje.getSingleton().get(indiceHistorial).getState();
+				System.out.println(Conserje.getSingleton().get(indiceHistorial).toString());
+
+				Pieza pieza;
+				for (int i = 30; i <= 240; i += 30) {
+					for (int j = 60; j <= 270; j += 30) {
+						pieza = celdas[(i - 30) / 30][7 - (j - 60) / 30];
+						// pieza = mediador.getTablero().getCelda((i - 30) / 30,
+						// 7 - (j - 60) / 30).getPieza();
+						if (pieza != null) {
+							if (pieza.getJugador().equals(mediador.getJugador1())) {
+								g.drawImage(images.get(pieza.getTipo() + 10), i, j, this);
+							} else {
+								g.drawImage(images.get(-pieza.getTipo() + 10), i, j, this);
+							}
+						}
+
+					}
+
+				}
+			}
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+
+			Point p = e.getPoint();
+
+			System.out.println("x: " + p.getX() + " y: " + p.getY());
+
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+		}
+	}
+
 	// super.paintComponent(g);
-	// g.drawImage(images.get(GameData.HISTORY_TITLE),20,15,this);
-	// g.drawImage(images.get(GameData.BOARD_IMAGE2),14,44,this);
-	// if(history_positions.size()<=0) return;
+	// g.drawImage(images.get(GameData.HISTORY_TITLE), 20, 15, this);
+	// g.drawImage(images.get(GameData.BOARD_IMAGE2), 14, 44, this);
+	// if (history_positions.size() <= 0)
+	// return;
 	// Position _position = history_positions.get(history_count);
-	// for(int i=0; i<_position.board.length -11; i++){
-	// if(_position.board[i] == GameData.EMPTY) continue;
-	// if(_position.board[i] == GameData.ILLEGAL) continue;
-	// int x = i%10;
-	// int y = (i-x)/10;
+	// for (int i = 0; i < _position.board.length - 11; i++) {
+	// if (_position.board[i] == GameData.EMPTY)
+	// continue;
+	// if (_position.board[i] == GameData.ILLEGAL)
+	// continue;
+	// int x = i % 10;
+	// int y = (i - x) / 10;
 	// if (_position.board[i] > 0) {
 	// int piece = _position.human_pieces[_position.board[i]].value;
-	// g.drawImage(images.get(piece+10),x*30,y*30,this);
-	// }else{
+	// g.drawImage(images.get(piece + 10), x * 30, y * 30, this);
+	// } else {
 	// int piece = _position.computer_pieces[-_position.board[i]].value;
-	// g.drawImage(images.get(-piece+10),x*30,y*30,this);
+	// g.drawImage(images.get(-piece + 10), x * 30, y * 30, this);
 	// }
 	// }
 	// }
 	// }
-	//
+
 	// public boolean checkCastling(int destination){
 	// Piece king = position.human_pieces[8];
 	// Piece right_rook = position.human_pieces[6];
@@ -552,24 +600,15 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 		icon_images.put(GameData.ABOUT_BUTTON, new ImageIcon(resource.getResource("about")));
 		icon_images.put(GameData.ABOUT_BUTTON2, new ImageIcon(resource.getResource("about_hover")));
 
-		/*
-		 * icon_images.put(GameData.FIRST_BUTTON,new
-		 * ImageIcon(resource.getResource("first")));
-		 * icon_images.put(GameData.FIRST_BUTTON2,new
-		 * ImageIcon(resource.getResource("first_hover")));
-		 * icon_images.put(GameData.NEXT_BUTTON,new
-		 * ImageIcon(resource.getResource("next")));
-		 * icon_images.put(GameData.NEXT_BUTTON2,new
-		 * ImageIcon(resource.getResource("next_hover")));
-		 * icon_images.put(GameData.PREV_BUTTON,new
-		 * ImageIcon(resource.getResource("previous")));
-		 * icon_images.put(GameData.PREV_BUTTON2,new
-		 * ImageIcon(resource.getResource("previous_hover")));
-		 * icon_images.put(GameData.LAST_BUTTON,new
-		 * ImageIcon(resource.getResource("last")));
-		 * icon_images.put(GameData.LAST_BUTTON2,new
-		 * ImageIcon(resource.getResource("last_hover")));
-		 */
+		icon_images.put(GameData.FIRST_BUTTON, new ImageIcon(resource.getResource("first")));
+		icon_images.put(GameData.FIRST_BUTTON2, new ImageIcon(resource.getResource("first_hover")));
+		icon_images.put(GameData.NEXT_BUTTON, new ImageIcon(resource.getResource("next")));
+		icon_images.put(GameData.NEXT_BUTTON2, new ImageIcon(resource.getResource("next_hover")));
+		icon_images.put(GameData.PREV_BUTTON, new ImageIcon(resource.getResource("previous")));
+		icon_images.put(GameData.PREV_BUTTON2, new ImageIcon(resource.getResource("previous_hover")));
+		icon_images.put(GameData.LAST_BUTTON, new ImageIcon(resource.getResource("last")));
+		icon_images.put(GameData.LAST_BUTTON2, new ImageIcon(resource.getResource("last_hover")));
+
 	}
 
 	public void quit() {

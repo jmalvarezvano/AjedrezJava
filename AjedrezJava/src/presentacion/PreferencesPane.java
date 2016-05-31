@@ -8,6 +8,7 @@ package presentacion;
 import javax.swing.*;
 
 import logica.estrategia.JuegoEstandar;
+import logica.recuerdo.Conserje;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -72,7 +73,7 @@ public class PreferencesPane extends JFrame implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-
+		Conserje.getSingleton().reset();
 		if (e.getSource() == ok) {
 			if (clasico.isSelected())
 				chessmate.newGame(new JuegoEstandar());
