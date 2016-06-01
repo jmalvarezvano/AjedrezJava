@@ -141,7 +141,7 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 		if (!east_pane.isVisible()) {
 			east_pane.setVisible(true);
 			pack();
-			setLocationRelativeTo(null);
+			// setLocationRelativeTo(null);
 		}
 
 		mediador.juegoNuevo();
@@ -311,9 +311,9 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 	}
 
 	public class ChessBoardPane extends JPanel implements MouseListener {
-		Image animating_image;
 		int origenX, origenY, destinoX, destinoY;
-		boolean segundoClick, seleccionandoPieza;
+		boolean segundoClick, seleccionandoPieza, animando;
+		double animadoX, animadoY;
 
 		public ChessBoardPane() {
 			setPreferredSize(new Dimension(450, 495));
@@ -334,7 +334,6 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			g.drawImage(images.get(GameData.MYCHESSMATE), 20, 36, this);
-
 			g.drawImage(images.get(GameData.BOARD_IMAGE), 20, 65, this);
 			if (juegoActivo) {
 				if (turno == mediador.getJugador1())
@@ -350,38 +349,62 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 				Pieza pieza;
 				System.out.println(Thread.activeCount());
 				if (seleccionandoPieza)
-					g.drawImage(images.get(GameData.GLOW), origenX * 45 + 45, (7 - origenY) * 45 + 90, this);
-
-				// bloque try catch para pruebas. Se puede quitar, x e y tambien
-				try {
-					for (int i = 45; i <= 360; i += 45) {
-
-						for (int j = 90; j <= 405; j += 45) {
-							x = i;
-							y = j;
-							pieza = mediador.getTablero().getPieza((i - 45) / 45, 7 - (j - 90) / 45);
-							if (pieza != null) {
+					g.drawImage(images.get(GameData.GLOW), indiceXToCoordinada(origenX), indiceYToCoordinada(origenY),
+							this);
+				for (int i = 45; i <= 360; i += 45) {
+					for (int j = 90; j <= 405; j += 45) {
+						x = coordinadaXToIndice(i);
+						y = coordinadaYToIndice(j);
+						pieza = mediador.getTablero().getPieza(x, y);
+						if (pieza != null) {
+							if (x == destinoX && y == destinoY && animando) {
+								g.drawImage(images.get(GameData.GLOW2), indiceXToCoordinada(destinoX), 
+										indiceYToCoordinada(destinoY), this);
+								if (pieza.getJugador().equals(mediador.getJugador1())) {
+									g.drawImage(images.get(pieza.getTipo()), (int)animadoX, (int)animadoY, this);
+								} else {
+									g.drawImage(images.get(-pieza.getTipo()), (int)animadoX, (int)animadoY, this);
+								}
+							} else {
 								if (pieza.getJugador().equals(mediador.getJugador1())) {
 									g.drawImage(images.get(pieza.getTipo()), i, j, this);
 								} else {
 									g.drawImage(images.get(-pieza.getTipo()), i, j, this);
 								}
 							}
-
 						}
+
 					}
-				} catch (Exception e) {
-					System.out.println("i: " + x + " j: " + y);
 				}
+
 			}
 
 		}
 
+		public int indiceXToCoordinada(int indice) {
+			return indice * 45 + 45;
+		}
+
+		public int indiceYToCoordinada(int indice) {
+			return (7 - indice) * 45 + 90;
+		}
+
+		public int coordinadaXToIndice(double coord) {
+			return (int) ((coord - 45) / 45);
+		}
+
+		public int coordinadaYToIndice(double coord) {
+			return (int) (7 - ((coord - 90) / 45));
+		}
+
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if (juegoActivo) {
 
-				Point p = e.getPoint();
+			Point p = e.getPoint();
+			
+			//si está dentro de los bordes del tablero
+			if (juegoActivo && p.getX() <= 405 && p.getX() >= 45 && p.getY() <= 450 && p.getY() >= 90) {
+
 				int xActual = (int) (p.getX() - 45) / 45;
 				int yActual = (int) (8 - (p.getY() - 90) / 45);
 
@@ -390,11 +413,13 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 					destinoX = xActual;
 					destinoY = yActual;
 
-					turno.moverPieza(origenX, origenY, destinoX, destinoY);
-					indiceHistorial = Conserje.getSingleton().numEstadosGuardados() - 1;
 					segundoClick = false;
 					seleccionandoPieza = false;
 					System.out.println(origenX + " " + origenY + " to " + destinoX + " " + destinoY);
+
+					if (turno.moverPieza(origenX, origenY, destinoX, destinoY))
+						animarMovimiento();
+						indiceHistorial = Conserje.getSingleton().numEstadosGuardados() - 1;
 				} else {
 					seleccionandoPieza = true;
 					origenX = xActual;
@@ -405,6 +430,32 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 				history_pane.repaint();
 				repaint();
 			}
+
+		}
+
+		private void animarMovimiento() {
+			Thread t = new Thread() {
+				public void run() {
+					double incrementoX = (indiceXToCoordinada(destinoX) - indiceXToCoordinada(origenX)) / 30.0;
+					double incrementoY = (indiceYToCoordinada(destinoY) - indiceYToCoordinada(origenY)) / 30.0;
+					animadoX = indiceXToCoordinada(origenX);
+					animadoY = indiceYToCoordinada(origenY);
+					animando = true;
+					for (int i = 0; i < 30; i++) {
+						animadoX += incrementoX;
+						animadoY += incrementoY;
+						repaint();
+						try {
+							Thread.sleep(16);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+					animando = false;
+				}
+			};
+			t.start();
+
 		}
 
 		@Override
@@ -445,9 +496,7 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 				Pieza pieza;
 				for (int i = 30; i <= 240; i += 30) {
 					for (int j = 60; j <= 270; j += 30) {
-						pieza = celdas[(i - 30) / 30][7 - (j - 60) / 30];
-						// pieza = mediador.getTablero().getCelda((i - 30) / 30,
-						// 7 - (j - 60) / 30).getPieza();
+						pieza = celdas[(i - 30) / 30][7 - (j - 60) / 30];						
 						if (pieza != null) {
 							if (pieza.getJugador().equals(mediador.getJugador1())) {
 								g.drawImage(images.get(pieza.getTipo() + 10), i, j, this);
@@ -628,36 +677,36 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				try {
+					boolean nimbusFound = false;
+					for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+						if (info.getName().equals("Nimbus")) {
+							UIManager.setLookAndFeel(info.getClassName());
+							nimbusFound = true;
+							break;
+						}
+					}
+					if (!nimbusFound) {
+						int option = JOptionPane.showConfirmDialog(null,
+								"Nimbus Look And Feel not found\n" + "Do you want to proceed?", "Warning",
+								JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+						if (option == JOptionPane.NO_OPTION) {
+							System.exit(0);
+						}
+					}
+					MainPane mcg = new MainPane();
+					mcg.pack();
+					mcg.setLocationRelativeTo(null);
+					mcg.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					mcg.setResizable(false);
+					mcg.setVisible(true);
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(null, e.getStackTrace());
+					e.printStackTrace();
+				}
 
 			}
 		});
-		try {
-			boolean nimbusFound = false;
-			for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-				if (info.getName().equals("Nimbus")) {
-					UIManager.setLookAndFeel(info.getClassName());
-					nimbusFound = true;
-					break;
-				}
-			}
-			if (!nimbusFound) {
-				int option = JOptionPane.showConfirmDialog(null,
-						"Nimbus Look And Feel not found\n" + "Do you want to proceed?", "Warning",
-						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-				if (option == JOptionPane.NO_OPTION) {
-					System.exit(0);
-				}
-			}
-			MainPane mcg = new MainPane();
-			mcg.pack();
-			mcg.setLocationRelativeTo(null);
-			mcg.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			mcg.setResizable(false);
-			mcg.setVisible(true);
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e.getStackTrace());
-			e.printStackTrace();
-		}
 
 	}
 
