@@ -151,57 +151,7 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 
 	}
 
-	// public void play(){
-	// Thread t = new Thread(){
-	// public void run(){
-	// while(true){
-	// switch(state){
-	// case GameData.HUMAN_MOVE:
-	// break;
-	// case GameData.COMPUTER_MOVE:
-	// if(gameEnded(GameData.COMPUTER)){
-	// state = GameData.GAME_ENDED;
-	// break;
-	// }
-	// move = move_searcher.alphaBeta(GameData.COMPUTER, position,
-	// Integer.MIN_VALUE, Integer.MAX_VALUE,
-	// play_options.levelSlider.getValue()).last_move;
-	// state = GameData.PREPARE_ANIMATION;
-	// break;
-	// case GameData.PREPARE_ANIMATION:
-	// prepareAnimation();
-	// break;
-	// case GameData.ANIMATING:
-	// animate();
-	// break;
-	// case GameData.GAME_ENDED: return;
-	// }
-	// try{
-	// Thread.sleep(3);
-	// }catch(Exception e){
-	// e.printStackTrace();
-	// }
-	// }
-	// }
-	// };
-	// t.start();
-	// }
-	// public boolean gameEnded(int player){
-	// int result = game.getResult(player);
-	// boolean end_game = false;
-	// String color ="";
-	// if(player == GameData.COMPUTER){
-	// color = (is_white)?"White":"Black";
-	// }else color = (is_white)?"Black":"White";
-	// if(result == GameData.CHECKMATE){
-	// showEndGameResult(color+" wins by CHECKMATE");
-	// end_game = true;
-	// }else if(result == GameData.DRAW){
-	// showEndGameResult("DRAW");
-	// end_game = true;
-	// }
-	// return end_game;
-	// }
+
 	public void showEndGameResult(String message) {
 		int option = JOptionPane.showOptionDialog(null, message, "Game Over", 0, JOptionPane.PLAIN_MESSAGE, null,
 				new Object[] { "Play again", "Cancel" }, "Play again");
@@ -347,7 +297,6 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 
 				int x = 0, y = 0;
 				Pieza pieza;
-				System.out.println(Thread.activeCount());
 				if (seleccionandoPieza)
 					g.drawImage(images.get(GameData.GLOW), indiceXToCoordinada(origenX), indiceYToCoordinada(origenY),
 							this);
