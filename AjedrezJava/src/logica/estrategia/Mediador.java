@@ -11,7 +11,7 @@ import presentacion.MainPane;
 public abstract class Mediador implements Estrategia, Subject {
 
 	protected Tablero tablero;
-	protected Jugador[] jugadores;
+	protected Jugador[] jugadores; //jugadores[0] = blancas y jugadores[1] = negras
 	protected MainPane interfaz;
 	protected int turno;
 
@@ -40,6 +40,7 @@ public abstract class Mediador implements Estrategia, Subject {
 		this.tablero = tablero;
 	}
 
+	//Jugador fichas blancas
 	public Jugador getJugador1() {
 		return jugadores[0];
 	}
@@ -62,6 +63,7 @@ public abstract class Mediador implements Estrategia, Subject {
 
 	public abstract void inicializarTablero();
 	
+	//Jugador fichas negras
 	public Jugador getJugador2() {
 		return jugadores[1];
 	}

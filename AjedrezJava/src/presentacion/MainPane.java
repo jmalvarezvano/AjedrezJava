@@ -354,40 +354,7 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 
-			Point p = e.getPoint();
-
-			// si está dentro de los bordes del tablero
-			if (juegoActivo && p.getX() <= 405 && p.getX() >= 45 && p.getY() <= 450 && p.getY() >= 90) {
-				int xActual = (int) (p.getX() - 45) / 45;
-				int yActual = (int) (8 - (p.getY() - 90) / 45);
-
-				System.out.println("x: " + p.getX() + " y: " + p.getY());
-				if (segundoClick) {
-					destinoX = xActual;
-					destinoY = yActual;
-
-					segundoClick = false;
-					seleccionandoPieza = false;
-					System.out.println(origenX + " " + origenY + " to " + destinoX + " " + destinoY);
-
-					turno.moverPieza(origenX, origenY, destinoX, destinoY);
-					indiceHistorial = Conserje.getSingleton().numEstadosGuardados() - 1;
-				} else {
-					Pieza seleccionada = mediador.getTablero().getPieza(xActual, yActual);
-					if (seleccionada!= null && seleccionada.getJugador().equals(turno)) {
-
-						seleccionandoPieza = true;
-						origenX = xActual;
-						origenY = yActual;
-						segundoClick = true;
-					}
-				}
-
-				history_pane.repaint();
-				repaint();
-
-			}
-
+			
 		}
 
 		Lock lock = new ReentrantLock();
@@ -433,6 +400,41 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
+			
+			Point p = e.getPoint();
+
+			// si está dentro de los bordes del tablero
+			if (juegoActivo && p.getX() <= 405 && p.getX() >= 45 && p.getY() <= 450 && p.getY() >= 90) {
+				int xActual = (int) (p.getX() - 45) / 45;
+				int yActual = (int) (8 - (p.getY() - 90) / 45);
+
+				System.out.println("x: " + p.getX() + " y: " + p.getY());
+				if (segundoClick) {
+					destinoX = xActual;
+					destinoY = yActual;
+
+					segundoClick = false;
+					seleccionandoPieza = false;
+					System.out.println(origenX + " " + origenY + " to " + destinoX + " " + destinoY);
+
+					turno.moverPieza(origenX, origenY, destinoX, destinoY);
+					indiceHistorial = Conserje.getSingleton().numEstadosGuardados() - 1;
+				} else {
+					Pieza seleccionada = mediador.getTablero().getPieza(xActual, yActual);
+					if (seleccionada!= null && seleccionada.getJugador().equals(turno)) {
+
+						seleccionandoPieza = true;
+						origenX = xActual;
+						origenY = yActual;
+						segundoClick = true;
+					}
+				}
+
+				history_pane.repaint();
+				repaint();
+
+			}
+
 		}
 
 		@Override
