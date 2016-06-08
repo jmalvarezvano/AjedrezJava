@@ -9,8 +9,11 @@ public abstract class Pieza {
     public final static int BISHOP = 325;
     public final static int ROOK = 500;
     public final static int QUEEN = 9001;
-    public final static int KING = 1337;   
+    public final static int KING = 1337;  
+    public final static int MAN = 1;
+    public final static int CHECKERS_KING = 2;
 
+    
 	private int tipo;
 	private Jugador jugador;
 	

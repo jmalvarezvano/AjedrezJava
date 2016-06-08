@@ -43,6 +43,7 @@ public class JuegoEstandar extends Mediador {
 				((Peon) origen).setPrimerMovimiento(false);
 				System.out.println("actualizar peon");
 			}
+			interfaz.animarMovimiento(movimiento);
 			return true;
 		}
 		return false;

@@ -58,7 +58,20 @@ public class Tablero {
 	}
 
 	public void inicializarTableroDamas(Jugador j1, Jugador j2) {
-		// a implementar
+		piezas = new Pieza[8][8];		
+		for (int i = 0; i < 8; i++)
+			for (int j = 0; j < 3; j++)
+				if((i - j) % 2 == 0)
+				piezas[i][j]  = fabricaPiezas.crear("man", j1);
+		for (int i = 0; i < 8; i++)
+			for (int j = 5; j < 8; j++)
+				if((i - j) % 2 == 0)
+				piezas[i][j] = fabricaPiezas.crear("man", j2);
+		
+		Conserje.getSingleton().add(this.saveStateToMemento());
+
+
+		
 	}
 
 	// toString para pruebas en consola

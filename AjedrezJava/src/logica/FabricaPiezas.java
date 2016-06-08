@@ -2,10 +2,12 @@ package logica;
 
 import logica.piezas.Alfil;
 import logica.piezas.Caballo;
+import logica.piezas.Man;
 import logica.piezas.Peon;
 import logica.piezas.Pieza;
 import logica.piezas.Reina;
 import logica.piezas.Rey;
+import logica.piezas.ReyDamas;
 import logica.piezas.Torre;
 
 public class FabricaPiezas extends Fabrica {
@@ -22,6 +24,10 @@ public class FabricaPiezas extends Fabrica {
 		if (p.equals("reina")) return new Reina(j);
 		if (p.equals("rey")) return new Rey(j);
 		if (p.equals("torre")) return new Torre(j);
+		if (p.equals("man")) return new Man(j);
+		if (p.equals("reydamas")) return new ReyDamas(j);
+
+
 		return null;
 	}
 	

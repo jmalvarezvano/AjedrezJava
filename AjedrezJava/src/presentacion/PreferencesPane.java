@@ -7,6 +7,7 @@ package presentacion;
 
 import javax.swing.*;
 
+import logica.estrategia.Damas;
 import logica.estrategia.JuegoEstandar;
 import logica.recuerdo.Conserje;
 
@@ -80,7 +81,7 @@ public class PreferencesPane extends JFrame implements ActionListener {
 			if (invertido.isSelected())
 				chessmate.newGame(new JuegoEstandar()); //cambiar por la clase correcta
 			if (damas.isSelected())
-				chessmate.newGame(new JuegoEstandar()); //cambiar por la clase correcta
+				chessmate.newGame(new Damas()); //cambiar por la clase correcta
 
 		}
 		setVisible(false);
