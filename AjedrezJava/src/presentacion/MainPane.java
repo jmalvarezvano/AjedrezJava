@@ -302,7 +302,6 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 					g.drawImage(images.get(-imagenTurno), 385, 20, this); 
 				int x = 0, y = 0;
 				Pieza pieza;
-				System.out.println(Thread.activeCount());
 				if (seleccionandoPieza)
 					g.drawImage(images.get(GameData.GLOW), indiceXToCoordinada(origenX), indiceYToCoordinada(origenY),
 							this);
