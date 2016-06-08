@@ -45,7 +45,7 @@ public class Damas extends Mediador {
 			
 			Conserje.getSingleton().add(tablero.saveStateToMemento()); // guardar estado
 			interfaz.animarMovimiento(movimiento);
-			
+						
 			if(seguirAtacando) sigueAtacando(movimiento);
 				else cambiarTurno();
 
