@@ -8,6 +8,11 @@ public class Movimiento {
 	public int destinoY;
 	public Jugador jugador;
 	
+	
+	public Movimiento() {
+		
+	}
+
 	public Movimiento(int origenX, int origenY, int destinoX, int destinoY, Jugador jugador) {
 		this.origenX = origenX;
 		this.origenY = origenY;

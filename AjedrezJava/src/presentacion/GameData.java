@@ -15,7 +15,7 @@ public class GameData {
     public final static int COMPUTER = 0;
     public final static int BOARD_IMAGE = 1000;
     public final static int GLOW = 1001;
-    public final static int GLOW2 = 1002;    
+    public final static int GLOW2 = 1002; 
     public final static int PREPARE_ANIMATION = 1003;
     public final static int ANIMATING = 1004;
     public final static int HUMAN_MOVE = 1005;
@@ -44,6 +44,8 @@ public class GameData {
     public final static int HISTORY_TITLE = 10094;
     public final static int TURN = 10095;
     public final static int TITLE = 10096;
+    public final static int DARK_GLOW = 10097;    
+
 
     public final static String VERSION = new Resource().getResourceString("version");
    

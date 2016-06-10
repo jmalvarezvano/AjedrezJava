@@ -10,8 +10,14 @@ public class Memento {
 	      this.state = state; 	     
 	   }
 
+	   //en lugar de devolver state se crea un nuevo array para poder volver a este estado varias veces
 	   public Pieza[][] getState(){
-	      return state;
+		   Pieza[][] res = new Pieza[8][8];
+			for (int i = 0; i <= 7; i++) {			
+				for (int j = 0; j <= 7; j++)
+					res[i][j] = state[i][j];
+			}
+			return res;	
 	   }	   
 	  
 }

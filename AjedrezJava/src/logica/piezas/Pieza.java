@@ -16,7 +16,29 @@ public abstract class Pieza {
     
 	private int tipo;
 	private Jugador jugador;
+	private int posX;
+	private int posY;
 	
+	public int getPosX() {
+		return posX;
+	}
+
+
+	public void setPosX(int posX) {
+		this.posX = posX;
+	}
+
+
+	public int getPosY() {
+		return posY;
+	}
+
+
+	public void setPosY(int posY) {
+		this.posY = posY;
+	}
+
+
 	public Pieza(Jugador j, int m) {
 		jugador = j;
 		tipo = m;

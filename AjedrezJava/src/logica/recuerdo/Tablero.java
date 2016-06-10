@@ -1,9 +1,4 @@
 package logica.recuerdo;
-/*
- * comentario de prueba
- * otra prueba
- * prueba dani
- */
 
 import logica.Fabrica;
 import logica.FabricaPiezas;
@@ -11,7 +6,7 @@ import logica.Jugador;
 import logica.estrategia.Mediador;
 import logica.piezas.Pieza;
 
-public class Tablero {
+public class Tablero implements Cloneable {
 	private Pieza[][] piezas;
 	private Mediador mediador;
 	Fabrica fabricaPiezas;
@@ -19,6 +14,18 @@ public class Tablero {
 	public Tablero(Mediador m) {
 		mediador = m;
 		fabricaPiezas = FabricaPiezas.getSingleton();
+	}
+		
+	public int[] getPosRey(Jugador jugador) {
+		int[] res = new int[2];
+		for (int i = 0; i < 8; i++)
+			for (int j = 0; j < 8; j++) 
+				if(piezas[i][j] != null && piezas[i][j].getTipo() == Pieza.KING && piezas[i][j].getJugador().equals(jugador)) {
+					res[0] = i;
+					res[1] = j;
+					return res;
+				}
+		return res;
 	}
 
 	public void inicializarTableroEstandar(Jugador j1, Jugador j2) {
@@ -89,10 +96,7 @@ public class Tablero {
 		return out;
 	}
 
-	public Pieza[][] getPiezas() {
-		return piezas;
-	}
-
+	
 	public void setPiezas(Pieza[][] piezas) {
 		this.piezas = piezas;
 	}
@@ -107,17 +111,25 @@ public class Tablero {
 	
 	
 	//patrón Memento
-	public Memento saveStateToMemento() {
+	public Memento saveStateToMemento() {		
+		return new Memento(copiarPiezas());
+	}
+	
+	public Pieza[][] copiarPiezas() {
 		Pieza[][] res = new Pieza[8][8];
 		for (int i = 0; i <= 7; i++) {			
 			for (int j = 0; j <= 7; j++)
 				res[i][j] = piezas[i][j];
 		}
-		return new Memento(res);
+		return res;		
+	}
+	
+	public Pieza[][] getPiezas() {
+		return piezas;
 	}
 
 	public void getStateFromMemento(Memento Memento) {
-		piezas = Memento.getState();
+		piezas = Memento.getState().clone();
 	}
 	
 
@@ -129,7 +141,8 @@ public class Tablero {
 		this.mediador = mediador;
 	}
 
-	public Pieza getPieza(int x, int y) {
-		return piezas[x][y];
+	public Pieza getPieza(int x, int y) throws ArrayIndexOutOfBoundsException {
+			return piezas[x][y];		
 	}
+		
 }

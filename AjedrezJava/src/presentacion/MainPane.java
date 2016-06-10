@@ -29,10 +29,7 @@ import logica.estrategia.Mediador;
 import logica.piezas.Pieza;
 import logica.recuerdo.Conserje;
 
-/**
- *
- * @author Melvic
- */
+
 public class MainPane extends JFrame implements MouseListener, Observer {
 	ChessBoardPane board_pane;
 	HistoryBoardPane history_pane;
@@ -272,10 +269,18 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 
 		}
 	}
+	
+	public void setJaqueJ1(boolean jaque) {
+		board_pane.setJaqueJ1(jaque);
+	}
+	
+	public void setJaqueJ2(boolean jaque) {
+		board_pane.setJaqueJ2(jaque);
+	}
 
 	public class ChessBoardPane extends JPanel implements MouseListener {
 		int origenX, origenY, destinoX, destinoY, destinoXAnimacion, destinoYAnimacion;
-		boolean segundoClick, seleccionandoPieza, animando;
+		boolean segundoClick, seleccionandoPieza, animando, jaqueJ1, jaqueJ2;
 		double animadoX, animadoY;
 
 		public ChessBoardPane() {
@@ -284,11 +289,22 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 			addMouseListener(this);
 		}
 
+		public void setJaqueJ2(boolean jaque) {
+			jaqueJ2 = jaque;
+		}
+
+		public void setJaqueJ1(boolean jaque) {
+			jaqueJ1 = jaque;
+			
+		}
+
 		public void newGame() {
 			segundoClick = false;
 			seleccionandoPieza = false;
 			juegoActivo = true;
 			indiceHistorial = 0;
+			jaqueJ1 = false;
+			jaqueJ2 = false;			
 			history_pane.repaint();
 		}
 
@@ -306,6 +322,7 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 					g.drawImage(images.get(-imagenTurno), 385, 20, this);
 				int x = 0, y = 0;
 				Pieza pieza;
+				
 				if (seleccionandoPieza)
 					g.drawImage(images.get(GameData.GLOW), indiceXToCoordinada(origenX), indiceYToCoordinada(origenY),
 							this);
@@ -316,7 +333,7 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 						pieza = mediador.getTablero().getPieza(x, y);
 						if (pieza != null) {
 							if (x == destinoXAnimacion && y == destinoYAnimacion && animando) {
-								g.drawImage(images.get(GameData.GLOW2), indiceXToCoordinada(destinoXAnimacion),
+								g.drawImage(images.get(GameData.DARK_GLOW), indiceXToCoordinada(destinoXAnimacion),
 										indiceYToCoordinada(destinoYAnimacion), this);
 								if (pieza.getJugador().equals(mediador.getJugador1())) {
 									g.drawImage(images.get(pieza.getTipo()), (int) animadoX, (int) animadoY, this);
@@ -325,18 +342,19 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 								}
 							} else {
 								if (pieza.getJugador().equals(mediador.getJugador1())) {
+									if(jaqueJ1 && pieza.getTipo() == Pieza.KING)
+										g.drawImage(images.get(GameData.GLOW2), i, j, this);
 									g.drawImage(images.get(pieza.getTipo()), i, j, this);
 								} else {
+									if(jaqueJ2 && pieza.getTipo() == Pieza.KING)
+										g.drawImage(images.get(GameData.GLOW2), i, j, this);
 									g.drawImage(images.get(-pieza.getTipo()), i, j, this);
 								}
 							}
 						}
-
 					}
 				}
-
 			}
-
 		}
 
 		public int indiceXToCoordinada(int indice) {
@@ -372,7 +390,6 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 			try {
 				t.join();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -515,6 +532,7 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 			images.put(GameData.BOARD_IMAGE2, ImageIO.read(resource.getResource("history_board")));
 			images.put(GameData.GLOW, ImageIO.read(resource.getResource("glow")));
 			images.put(GameData.GLOW2, ImageIO.read(resource.getResource("glow2")));
+			images.put(GameData.DARK_GLOW, ImageIO.read(resource.getResource("dg")));
 			images.put(GameData.HISTORY_TITLE, ImageIO.read(resource.getResource("history_title")));
 			images.put(GameData.TURN, ImageIO.read(resource.getResource("turn")));
 			images.put(GameData.TITLE, ImageIO.read(resource.getResource("title")));
