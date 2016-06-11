@@ -26,7 +26,7 @@ public class JuegoEstandar extends Mediador {
 			interfaz.animarMovimiento(movimiento);
 			cambiarTurno();
 			actualizarJaqueInterfaz();
-			System.out.println("Es fin de juego: " + comprobarFinJuego(turno));
+			comprobarFinJuego(turno);
 			return true;
 		}
 		return false;
@@ -47,7 +47,6 @@ public class JuegoEstandar extends Mediador {
 			}
 			if (origen.getTipo() == Pieza.PAWN && ((Peon) origen).isPrimerMovimiento()) {
 				((Peon) origen).setPrimerMovimiento(false);
-				System.out.println("actualizar peon");
 			}
 			return true;
 		}
@@ -101,8 +100,6 @@ public class JuegoEstandar extends Mediador {
 				movimiento.destinoY = posicionesRey[1];
 				esValido = movimientoValidoSinJaque(movimiento);
 				if (esValido) {
-					System.out.println("Es Valido con: origenX: " + i + " origenY: " + j + " destinoX: "
-							+ movimiento.destinoX + " destinoY: " + movimiento.destinoY);
 					return true;
 				}
 			}
@@ -183,20 +180,13 @@ public class JuegoEstandar extends Mediador {
 				incrementoY = 1;
 			else
 				incrementoY = -1;
-			System.out.println("Inicio for Alfil");
 
 			for (int x = movimiento.origenX + incrementoX, y = movimiento.origenY + incrementoY;
 					x != movimiento.destinoX && y != movimiento.destinoY; x = x + incrementoX, y = y + incrementoY) {
-				System.out.println("Comproband Alfil en X: "+x+" Y: "+y);
 				if (tablero.getPieza(x, y) != null) {
-					System.out.println("Fin for Alfil");
-
 					return false;
-
 				}
 			}
-			System.out.println("Fin for Alfil");
-
 			return true;
 		}
 		return false;

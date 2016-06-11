@@ -27,9 +27,7 @@ public class Damas extends Mediador {
 
 	
 	public boolean mover(Movimiento movimiento) {
-		System.out.println("Jugador1: " + jugadores[0] + "Jugador2: " + jugadores[1]);
-		System.out.println("intento muevo pieza de damas");
-
+		
 		Pieza origen = tablero.getPieza(movimiento.origenX, movimiento.origenY);
 		Pieza destino = tablero.getPieza(movimiento.destinoX, movimiento.destinoY);
 
@@ -39,7 +37,6 @@ public class Damas extends Mediador {
 
 		if (destino != null)
 			return false;
-		System.out.println(origen + " to " + destino);
 
 		if (movimientoValido(movimiento)) {
 			tablero.quitarPieza(movimiento.origenX, movimiento.origenY);
@@ -113,7 +110,6 @@ public class Damas extends Mediador {
 	}
 
 	private boolean movimientoValido(Movimiento movimiento) {
-		System.out.println("Compruebo movimiento valido");
 
 		if (movimiento.jugador.equals(jugadores[0])) {
 			switch (tablero.getPieza(movimiento.origenX, movimiento.origenY).getTipo()) {
@@ -130,8 +126,6 @@ public class Damas extends Mediador {
 				return movimientoValidoRey(movimiento);
 			}
 		}
-		System.out.println("si estoy aqui entonces va mal");
-
 		return false;
 	}
 
@@ -141,14 +135,12 @@ public class Damas extends Mediador {
 		int xRelativo = Math.abs(movimiento.destinoX - movimiento.origenX);
 		int yRelativo = Math.abs(movimiento.destinoY - movimiento.origenY);
 		if (xRelativo == 1 && yRelativo == 1) {
-			System.out.println("Estoy en validomanj1 y es true");
 			return true;
 		}
 		if (atacando(movimiento)) {
 			seguirAtacando = true;
 			return true;
 		}
-		System.out.println("Estoy en validomanj1 y es false");
 		return false;
 	}
 
@@ -169,7 +161,6 @@ public class Damas extends Mediador {
 		else
 			ySalto = movimiento.origenY - 1;
 
-		System.out.println("SaltoX: " + xSalto + " SaltoY: " + ySalto);
 		if (xRelativo == 2 && yRelativo == 2) {
 			Pieza origen = tablero.getPieza(movimiento.origenX, movimiento.origenY);
 			Pieza salto = tablero.getPieza(xSalto, ySalto);
@@ -187,15 +178,12 @@ public class Damas extends Mediador {
 		int xRelativo = Math.abs(movimiento.destinoX - movimiento.origenX);
 		int yRelativo = Math.abs(movimiento.destinoY - movimiento.origenY);
 		if (xRelativo == 1 && yRelativo == 1) {
-			System.out.println("Estoy en validomanj2 y es true");
-
 			return true;
 		}
 		if (atacando(movimiento)) {
 			seguirAtacando = true;
 			return true;
 		}
-		System.out.println("Estoy en validomanj2 y es false");
 		return false;
 	}
 

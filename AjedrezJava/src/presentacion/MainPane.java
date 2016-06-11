@@ -49,9 +49,6 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 	public MainPane() {
 		super("Proyecto DDS");
 		setContentPane(main_pane);
-
-		System.out.println(mediador);
-
 		loadMenuIcons();
 		loadBoardImages();
 
@@ -418,16 +415,11 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 			if (juegoActivo && p.getX() <= 405 && p.getX() >= 45 && p.getY() <= 450 && p.getY() >= 90) {
 				int xActual = (int) (p.getX() - 45) / 45;
 				int yActual = (int) (8 - (p.getY() - 90) / 45);
-
-				System.out.println("x: " + p.getX() + " y: " + p.getY());
 				if (segundoClick) {
 					destinoX = xActual;
 					destinoY = yActual;
-
 					segundoClick = false;
 					seleccionandoPieza = false;
-					System.out.println(origenX + " " + origenY + " to " + destinoX + " " + destinoY);
-
 					new Thread() {
 						public void run() {
 							turno.moverPieza(origenX, origenY, destinoX, destinoY);
@@ -471,10 +463,7 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 			g.drawImage(images.get(GameData.HISTORY_TITLE), 20, 15, this);
 			g.drawImage(images.get(GameData.BOARD_IMAGE2), 15, 45, this);
 			if (juegoActivo) {
-				System.out.println("indiceHistorial: " + indiceHistorial);
 				Pieza[][] celdas = Conserje.getSingleton().get(indiceHistorial).getState();
-				System.out.println(Conserje.getSingleton().get(indiceHistorial).toString());
-
 				Pieza pieza;
 				for (int i = 30; i <= 240; i += 30) {
 					for (int j = 60; j <= 270; j += 30) {

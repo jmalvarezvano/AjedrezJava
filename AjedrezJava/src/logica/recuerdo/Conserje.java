@@ -19,7 +19,6 @@ public class Conserje {
 
 	public void add(Memento state) {
 		mementoList.add(state);
-		System.out.println(mementoList.size()+" estados del Tablero guardados");
 	}
 
 	public Memento get(int index) {
@@ -37,10 +36,6 @@ public class Conserje {
 
 	public void reset() {
 		mementoList = new ArrayList<Memento>();
-	}
-
-	public void resetFrom(int i) {
-		// a implementar
 	}
 
 }
