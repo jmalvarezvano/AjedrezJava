@@ -10,12 +10,33 @@ import logica.recuerdo.Conserje;
 
 public class JuegoEstandar extends Mediador {
 
-	public boolean moverPieza(Movimiento movimiento) {
-		
+	// comprueba el jaque despues de mover y deshace si es el caso o anima el
+	// movimiento
+	public boolean moverYAnimarPieza(Movimiento movimiento) {
+		boolean seMueve = moverPieza(movimiento);
+		if (seMueve) {
+			actualizarJaques();
+			if (movimiento.jugador.esJaque()) {
+				tablero.getStateFromMemento(Conserje.getSingleton().getLast());
+				actualizarJaques();
+				return false;
+			}
+			Conserje.getSingleton().add(tablero.saveStateToMemento()); // guardar
+			// estado
+			interfaz.animarMovimiento(movimiento);
+			cambiarTurno();
+			actualizarJaqueInterfaz();
+			System.out.println("Es fin de juego: " + comprobarFinJuego(turno));
+			return true;
+		}
+		return false;
+
+	}
+
+	// muevue sin comprobar jaque ni cambiar turno
+	private boolean moverPieza(Movimiento movimiento) {
 		Pieza origen = tablero.getPieza(movimiento.origenX, movimiento.origenY);
-	
-		//aunque sea movimiento valido destino no puede ser rey
-		if (movimientoValido(movimiento)) {			
+		if (movimientoValidoSinJaque(movimiento)) {
 			tablero.quitarPieza(movimiento.origenX, movimiento.origenY);
 			tablero.setPieza(movimiento.destinoX, movimiento.destinoY, origen);
 			if (origen.getTipo() == Pieza.PAWN) {
@@ -24,164 +45,91 @@ public class JuegoEstandar extends Mediador {
 				if (movimiento.jugador == jugadores[1] && movimiento.destinoY == 0)
 					tablero.setPieza(movimiento.destinoX, movimiento.destinoY, promoverPeon(origen.getJugador()));
 			}
-
-						if (origen.getTipo() == Pieza.PAWN && ((Peon) origen).isPrimerMovimiento()) {
+			if (origen.getTipo() == Pieza.PAWN && ((Peon) origen).isPrimerMovimiento()) {
 				((Peon) origen).setPrimerMovimiento(false);
 				System.out.println("actualizar peon");
 			}
-	
-						
-			actualizarCeldasDefendidas();
-			
-			//deshacer si el jugador que hace el movimiento sigue o entra en jaque 
-			if(movimiento.jugador.isJaque()) {
-				actualizarCeldasDefendidas();
-
-				tablero.getStateFromMemento(Conserje.getSingleton().getLast());
-				return false;
-			}
-			Conserje.getSingleton().add(tablero.saveStateToMemento()); // guardar
-			// estado
-
-			interfaz.animarMovimiento(movimiento);
-			cambiarTurno();
-
 			return true;
 		}
 		return false;
-		
 	}
-	
-	private boolean[][] getCeldasDefendidas(Jugador jugador, int[] posicionesRey) {
-		boolean[][] res = new boolean[3][3];
-		Movimiento movimiento = new Movimiento();
-		boolean esValido;
 
-		movimiento.jugador = jugador;
-		for(int x1 = 0, x2 = -1; x1 <= 2 && x2 <= 1; x1++, x2++)
-			for(int y1 = 0, y2 = -1; y1 <= 2 && y2 <= 1; y1++, y2++)
-				for(int i = 0; i <= 7 && !res[x1][y1]; i++)
-					for(int j = 0; j <= 7 && !res[x1][y1]; j++) {
-						movimiento.origenX = i;
-						movimiento.origenY = j;
-						movimiento.destinoX = posicionesRey[0] + x2;
-						movimiento.destinoY = posicionesRey[1] + y2;
-						esValido = movimientoValido(movimiento);
-						if(esValido) {
-							res[x1][y1] = true;
-							System.out.println("Es Valido con: origenX: " + i + " origenY: "+j
-									+" destinoX: "+movimiento.destinoX+" destinoY: "+movimiento.destinoY);
-						}
-					}
-		
-		
-		
+	// parecido a movimientoValido pero tiene en cuenta el jaque - mas costoso
+	private boolean movimientoValidoConJaque(Movimiento movimiento) {
+		boolean seMueve = moverPieza(movimiento);
+		boolean res = false;
+		if (seMueve) {
+			actualizarJaques();
+			if (!movimiento.jugador.esJaque()) {
+				res = true;
+			}
+		}
+		tablero.getStateFromMemento(Conserje.getSingleton().getLast());
+		actualizarJaques();
 		return res;
 	}
-	
-	private void actualizarCeldasDefendidas() {
-		boolean[][] celdasDefendidasPorJ1 = new boolean[3][3];
-		boolean[][] celdasDefendidasPorJ2 = new boolean[3][3];
 
-		int[] posReyJ1 = tablero.getPosRey(jugadores[0]);
-		int[] posReyJ2 = tablero.getPosRey(jugadores[1]);
-		
-		boolean esValido;
-		Movimiento movimiento = new Movimiento();
-		movimiento.jugador = jugadores[0];
-		for(int x1 = 0, x2 = -1; x1 <= 2 && x2 <= 1; x1++, x2++)
-			for(int y1 = 0, y2 = -1; y1 <= 2 && y2 <= 1; y1++, y2++)
-				for(int i = 0; i <= 7 && !celdasDefendidasPorJ1[x1][y1]; i++)
-					for(int j = 0; j <= 7 && !celdasDefendidasPorJ1[x1][y1]; j++) {
-						movimiento.origenX = i;
-						movimiento.origenY = j;
-						movimiento.destinoX = posReyJ2[0] + x2;
-						movimiento.destinoY = posReyJ2[1] + y2;
-						esValido = movimientoValido(movimiento);
-						if(esValido) {
-							celdasDefendidasPorJ1[x1][y1] = true;
-							System.out.println("Es Valido con: origenX: " + i + " origenY: "+j
-									+" destinoX: "+movimiento.destinoX+" destinoY: "+movimiento.destinoY);
-						}
-					}
-		
-		movimiento.jugador = jugadores[1];
-		for(int x1 = 0, x2 = -1; x1 <= 2 && x2 <= 1; x1++, x2++)
-			for(int y1 = 0, y2 = -1; y1 <= 2 && y2 <= 1; y1++, y2++)
-				for(int i = 0; i <= 7 && !celdasDefendidasPorJ2[x1][y1]; i++)
-					for(int j = 0; j <= 7 && !celdasDefendidasPorJ2[x1][y1]; j++) {
-						movimiento.origenX = i;
-						movimiento.origenY = j;
-						movimiento.destinoX = posReyJ1[0] + x2;
-						movimiento.destinoY = posReyJ1[1] + y2;
-						esValido = movimientoValido(movimiento);
-						if(esValido) {
-							celdasDefendidasPorJ2[x1][y1] = true;
-							System.out.println("Es Valido con: origenX: " + i + " origenY: "+j
-									+" destinoX: "+movimiento.destinoX+" destinoY: "+movimiento.destinoY);
-						}
-					}
-
-		jugadores[0].setCeldasDefendidasPorRival(celdasDefendidasPorJ2);
-		jugadores[1].setCeldasDefendidasPorRival(celdasDefendidasPorJ1);
-		actualizarJaqueInterfaz();
-		
-		
-		System.out.println("Defendidas porJ1:");
-
-		
-		for(int i = 0; i <= 2; i++){
-			System.out.print("\n");
-			for(int j = 0; j <= 2; j++) {
-				System.out.print(celdasDefendidasPorJ1[i][j]+" ");
-
-			}
-		}
-		
-		System.out.println("Defendidas porJ2:");
-
-		for(int i = 0; i <= 2; i++){
-			System.out.print("\n");
-			for(int j = 0; j <= 2; j++) {
-				System.out.print(celdasDefendidasPorJ2[i][j]+" ");
-
-			}
-		}
-										
-	}
-
-	private void actualizarJaqueInterfaz() {
-		interfaz.setJaqueJ1(jugadores[0].isJaque());
-		interfaz.setJaqueJ2(jugadores[1].isJaque());
-
-	}
-
-	private boolean movimientoValido(Movimiento movimiento) {
+	// comprueba si el movimiento esta permitido no tiene en cuenta el jaque -
+	// menos costoso
+	private boolean movimientoValidoSinJaque(Movimiento movimiento) {
 		Pieza origen;
 		Pieza destino;
-		
-		try{
-		origen = tablero.getPieza(movimiento.origenX, movimiento.origenY);
-		destino = tablero.getPieza(movimiento.destinoX, movimiento.destinoY);
+		try {
+			origen = tablero.getPieza(movimiento.origenX, movimiento.origenY);
+			destino = tablero.getPieza(movimiento.destinoX, movimiento.destinoY);
 		} catch (Exception e) {
 			return false;
 		}
-
 		if (origen == null || !origen.getJugador().equals(movimiento.jugador))
 			return false; // pieza origen existe y es del mismo jugador
 		if (destino != null && (destino.getJugador().equals(movimiento.jugador)))
 			return false; // si pieza destino existe tiene que ser del otro
 							// jugador y no puede ser rey
-		
-		return movimientoValidoTipoPieza(movimiento, origen.getTipo());	
-		
+		return movimientoValidoTipoPieza(movimiento, origen.getTipo());
+
+	}
+
+	private boolean atacandoAlRey(Jugador jugador, int[] posicionesRey) {
+		Movimiento movimiento = new Movimiento();
+		boolean esValido;
+		movimiento.jugador = jugador;
+		for (int i = 0; i <= 7; i++)
+			for (int j = 0; j <= 7; j++) {
+				movimiento.origenX = i;
+				movimiento.origenY = j;
+				movimiento.destinoX = posicionesRey[0];
+				movimiento.destinoY = posicionesRey[1];
+				esValido = movimientoValidoSinJaque(movimiento);
+				if (esValido) {
+					System.out.println("Es Valido con: origenX: " + i + " origenY: " + j + " destinoX: "
+							+ movimiento.destinoX + " destinoY: " + movimiento.destinoY);
+					return true;
+				}
+			}
+		return false;
+	}
+
+	private void actualizarJaques() {
+		boolean jugador1AtacandoAlRey;
+		boolean jugador2AtacandoAlRey;
+		int[] posReyJ1 = tablero.getPosRey(jugadores[0]);
+		int[] posReyJ2 = tablero.getPosRey(jugadores[1]);
+		jugador1AtacandoAlRey = atacandoAlRey(jugadores[0], posReyJ2);
+		jugador2AtacandoAlRey = atacandoAlRey(jugadores[1], posReyJ1);
+		jugadores[0].setEsJaque(jugador2AtacandoAlRey);
+		jugadores[1].setEsJaque(jugador1AtacandoAlRey);
+
+	}
+
+	private void actualizarJaqueInterfaz() {
+		interfaz.setJaqueJ1(jugadores[0].esJaque());
+		interfaz.setJaqueJ2(jugadores[1].esJaque());
 	}
 
 	private Pieza promoverPeon(Jugador jugador) {
 		boolean esBlanco = jugador.equals(jugadores[0]);
 		int tipoNuevaPieza = interfaz.promoverPeon(esBlanco);
 		Pieza nuevaPieza = null;
-
 		/*
 		 * cambiando la fabrica para que funcione con tipos de piezas en lugar
 		 * de string se puede evitar este switch
@@ -225,11 +173,30 @@ public class JuegoEstandar extends Mediador {
 		int xRelativo = Math.abs(movimiento.destinoX - movimiento.origenX);
 		int yRelativo = Math.abs(movimiento.destinoY - movimiento.origenY);
 		if (xRelativo == yRelativo) {
-			for (int x = movimiento.origenX + 1, y = movimiento.origenY + 1; x < movimiento.destinoX
-					&& y < movimiento.destinoY; x++, y++) {
-				if (tablero.getPieza(x, y) != null)
+			int incrementoX;
+			int incrementoY;
+			if (movimiento.destinoX > movimiento.origenX)
+				incrementoX = 1;
+			else
+				incrementoX = -1;
+			if (movimiento.destinoY > movimiento.origenY)
+				incrementoY = 1;
+			else
+				incrementoY = -1;
+			System.out.println("Inicio for Alfil");
+
+			for (int x = movimiento.origenX + incrementoX, y = movimiento.origenY + incrementoY;
+					x != movimiento.destinoX && y != movimiento.destinoY; x = x + incrementoX, y = y + incrementoY) {
+				System.out.println("Comproband Alfil en X: "+x+" Y: "+y);
+				if (tablero.getPieza(x, y) != null) {
+					System.out.println("Fin for Alfil");
+
 					return false;
+
+				}
 			}
+			System.out.println("Fin for Alfil");
+
 			return true;
 		}
 		return false;
@@ -294,11 +261,13 @@ public class JuegoEstandar extends Mediador {
 		int xRelativo = Math.abs(movimiento.destinoX - movimiento.origenX);
 		int yRelativo = Math.abs(movimiento.destinoY - movimiento.origenY);
 
-//		Rey rey = (Rey) tablero.getPieza(movimiento.origenX, movimiento.origenY);
-//		if (rey.isJaque()) {
-//			if (rey.getCeldasDefendidasPorRival()[movimiento.destinoX][movimiento.destinoY])
-//				return false;
-//		}
+		// Rey rey = (Rey) tablero.getPieza(movimiento.origenX,
+		// movimiento.origenY);
+		// if (rey.isJaque()) {
+		// if
+		// (rey.getCeldasDefendidasPorRival()[movimiento.destinoX][movimiento.destinoY])
+		// return false;
+		// }
 		if (xRelativo <= 1 && yRelativo <= 1)
 			return true;
 		return false;
@@ -325,22 +294,172 @@ public class JuegoEstandar extends Mediador {
 		return false;
 	}
 
-//	private boolean isJaqueMate(int origenX, int origenY) {
-//		for (int x = -1; x < 2; x++)
-//			for (int y = -1; y < 2; y++)
-//				if (!((Rey) (tablero.getPieza(origenX, origenY))).getCeldasDefendidasPorRival()[origenX + x][origenY
-//						+ y])
-//					return false;
-//		return true;
-//	}
+	private boolean comprobarFinJuego(int jugador) {
+		boolean esJaque = jugadores[jugador].esJaque();
+		boolean esAhogado = comprobarAhogado(jugadores[jugador]);
+		if(esJaque && esAhogado) interfaz.gameEnded(Math.abs(jugador-1));
+		if(!esJaque && esAhogado) interfaz.gameEnded(Math.abs(2));
+		
+		return esAhogado;
+		  
+	}
 
-	private boolean ahogado(Jugador jugador, int origenX, int origenY) {
-		/*
-		 * if(!rey.isJaque()){ return (rey.esCeldaDefendidaPorRival(origenX,
-		 * origenY + 1) && rey.esCeldaDefendidaPorRival(origenX, origenY - 1) &&
-		 * rey.esCeldaDefendidaPorRival(origenX + 1, origenY) &&
-		 * rey.esCeldaDefendidaPorRival(origenX - 1, origenY)); }
-		 */
+	// busca si al jugador que se le pasa le quendan movimientos legales
+	// devuelve true si esta ahogado
+	private boolean comprobarAhogado(Jugador jugador) {
+		Pieza pieza = null;
+		for (int i = 0; i <= 7; i++)
+			for (int j = 0; j <= 7; j++) {
+				pieza = tablero.getPieza(i, j);
+				if (pieza == null || pieza.getJugador() != jugador)
+					continue;
+				if (tieneMovimiento(pieza, i, j))
+					return false;
+			}
+		return true;
+	}
+
+	private boolean tieneMovimiento(Pieza pieza, int x, int y) {
+		int tipo = pieza.getTipo();
+		switch (tipo) {
+		case Pieza.BISHOP:
+			return tieneMovimientoAlfil(pieza, x, y);
+		case Pieza.KING:
+			return tieneMovimientoRey(pieza, x, y);
+		case Pieza.KNIGHT:
+			return tieneMovimientoCaballo(pieza, x, y);
+		case Pieza.PAWN:
+			return tieneMovimientoPeon(pieza, x, y);
+		case Pieza.QUEEN:
+			return tieneMovimientoReina(pieza, x, y);
+		case Pieza.ROOK:
+			return tieneMovimientoTorre(pieza, x, y);
+		}
+		return false;
+	}
+
+	private boolean tieneMovimientoReina(Pieza pieza, int x, int y) {
+		return tieneMovimientoAlfil(pieza, x, y) || tieneMovimientoTorre(pieza, x, y);
+	}
+
+	private boolean tieneMovimientoTorre(Pieza pieza, int x, int y) {
+		Movimiento movimiento = new Movimiento();
+		movimiento.jugador = pieza.getJugador();
+		movimiento.origenX = x;
+		movimiento.origenY = y;
+
+		movimiento.destinoY = y;
+		for (int i = 0; i <= 7; i++) {
+			movimiento.destinoX = i;
+			if (i != x)
+				if (movimientoValidoConJaque(movimiento))
+					return true;
+		}
+		movimiento.destinoX = x;
+		for (int i = 0; i <= 7; i++) {
+			movimiento.destinoY = i;
+			if (i != y)
+				if (movimientoValidoConJaque(movimiento))
+					return true;
+		}
+		return false;
+	}
+
+	private boolean tieneMovimientoPeon(Pieza pieza, int x, int y) {
+		Movimiento movimiento = new Movimiento();
+		movimiento.jugador = pieza.getJugador();
+		movimiento.origenX = x;
+		movimiento.origenY = y;
+
+		movimiento.destinoX = x;
+		if (((Peon) pieza).isPrimerMovimiento()) {
+			for (int i = -2; i <= 2; i++) {
+				movimiento.destinoY = i;
+				if (i != y)
+					if (movimientoValidoConJaque(movimiento))
+						return true;
+			}
+		} else {
+			for (int i = -1; i <= 1; i++) {
+				movimiento.destinoY = i;
+				if (i != y)
+					if (movimientoValidoConJaque(movimiento))
+						return true;
+			}
+		}
+		// comprobar ataques posibles
+		movimiento.destinoX = x - 1;
+		movimiento.destinoY = y + 1;
+		if (movimientoValidoConJaque(movimiento))
+			return true;
+		movimiento.destinoX = x + 1;
+		movimiento.destinoY = y - 1;
+		if (movimientoValidoConJaque(movimiento))
+			return true;
+		movimiento.destinoX = x + 1;
+		movimiento.destinoY = y + 1;
+		if (movimientoValidoConJaque(movimiento))
+			return true;
+		movimiento.destinoX = x - 1;
+		movimiento.destinoY = y - 1;
+		if (movimientoValidoConJaque(movimiento))
+			return true;
+
+		return false;
+	}
+
+	private boolean tieneMovimientoCaballo(Pieza pieza, int x, int y) {
+		Movimiento movimiento = new Movimiento();
+		movimiento.jugador = pieza.getJugador();
+		movimiento.origenX = x;
+		movimiento.origenY = y;
+		int[] casosX = { -2, -1, 1, 2, 2, 1, -1, -2 };
+		int[] casosY = { 1, 2, 2, 1, -1, -2, -2, -1 };
+		for (int i = 0; i < casosX.length; i++) {
+			movimiento.destinoX = x + casosX[i];
+			movimiento.destinoY = y + casosY[i];
+			if (movimientoValidoConJaque(movimiento))
+				return true;
+		}
+		return false;
+	}
+
+	private boolean tieneMovimientoRey(Pieza pieza, int x, int y) {
+		Movimiento movimiento = new Movimiento();
+		movimiento.jugador = pieza.getJugador();
+		movimiento.origenX = x;
+		movimiento.origenY = y;
+		for (int i = -1; i <= 1; i++)
+			for (int j = -1; j <= 1; j++) {
+				movimiento.destinoX = x + i;
+				movimiento.destinoY = y + j;
+				if (i != 0 && j != 0)
+					if (movimientoValidoConJaque(movimiento))
+						return true;
+			}
+		return false;
+	}
+
+	private boolean tieneMovimientoAlfil(Pieza pieza, int x, int y) {
+		Movimiento movimiento = new Movimiento();
+		movimiento.jugador = pieza.getJugador();
+		movimiento.origenX = x;
+		movimiento.origenY = y;
+		for (int i = y - x, j = 0; i < 8 && j < 8; i++, j++) {
+			movimiento.destinoX = i;
+			movimiento.destinoY = j;
+			if (i != 0 && j != 0)
+				if (movimientoValidoConJaque(movimiento))
+					return true;
+		}
+		for (int i = y + x, j = 0; i < 8 && j < 8; i--, j++) {
+			movimiento.destinoX = i;
+			movimiento.destinoY = j;
+			if (i != 0 && j != 0)
+				if (movimientoValidoConJaque(movimiento))
+					return true;
+		}
+
 		return false;
 	}
 
@@ -352,4 +471,5 @@ public class JuegoEstandar extends Mediador {
 	public boolean finJuego() {
 		return false;
 	}
+
 }

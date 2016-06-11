@@ -6,14 +6,23 @@ import logica.piezas.Pieza;
 import logica.recuerdo.Conserje;
 
 public class Damas extends Mediador {
+	
+	private int turnos;
+	private boolean esFin;
+	private static int MAX_TURNOS = 60;
 
 	private boolean seguirAtacando;
 
 	
 	@Override
-	public boolean moverPieza(Movimiento movimiento) {
+	public boolean moverYAnimarPieza(Movimiento movimiento) {
 		seguirAtacando = false;
-		return mover(movimiento);
+		if (esFin) {
+			return false;
+		}
+		boolean seMueve = mover(movimiento);
+		if (seMueve) esFin();
+		return seMueve;
 	}
 
 	
@@ -48,11 +57,38 @@ public class Damas extends Mediador {
 						
 			if(seguirAtacando) sigueAtacando(movimiento);
 				else cambiarTurno();
-
+			turnos++;
+			
 			return true;
 		}
 		return false;
 	}
+
+	private void esFin() {
+		int contJ1 = 0;
+		int contJ2 = 0;
+		for(int i = 0; i < 8; i++)
+			for(int j = 0; j < 8; j++)
+				if(tablero.getPieza(i, j) != null) 
+					if(tablero.getPieza(i, j).getJugador().equals(jugadores[0])) {
+						contJ1++;
+					} else contJ2++;
+		
+		if(contJ1 == 0) {
+			esFin = true;
+			interfaz.gameEnded(1);
+		}
+		if(contJ2 == 0) {
+			esFin = true;
+			interfaz.gameEnded(0);
+		}
+		if(turnos >= MAX_TURNOS) {
+			esFin = true;
+			interfaz.gameEnded(2);
+		}
+		
+	}
+
 
 	private boolean sigueAtacando(Movimiento movimiento) {
 		try {
@@ -170,6 +206,7 @@ public class Damas extends Mediador {
 	@Override
 	public void inicializarTablero() {
 		tablero.inicializarTableroDamas(jugadores[0], jugadores[1]);
+		turnos = 0;
 	}
 
 }

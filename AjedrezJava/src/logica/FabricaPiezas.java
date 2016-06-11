@@ -35,4 +35,28 @@ public class FabricaPiezas extends Fabrica {
 		if(fabricaPiezas == null) fabricaPiezas = new FabricaPiezas();
 		return fabricaPiezas;
 	}
+
+	public Pieza clonar(Pieza pieza) {
+		if(pieza == null) return null;
+		switch (pieza.getTipo()) {
+		case Pieza.BISHOP:
+			return new Alfil(pieza.getJugador());
+		case Pieza.KNIGHT:
+			return new Caballo(pieza.getJugador());
+		case Pieza.PAWN:
+			return new Peon(pieza.getJugador());
+		case Pieza.QUEEN:
+			return new Reina(pieza.getJugador());
+		case Pieza.KING:
+			return new Rey(pieza.getJugador());
+		case Pieza.ROOK:
+			return new Torre(pieza.getJugador());
+		case Pieza.MAN:
+			return new Man(pieza.getJugador());
+		case Pieza.CHECKERS_KING:
+			return new ReyDamas(pieza.getJugador());
+
+		}
+		return null;
+	}
 }

@@ -161,19 +161,6 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 
 	}
 
-	public void showEndGameResult(String message) {
-		int option = JOptionPane.showOptionDialog(null, message, "Game Over", 0, JOptionPane.PLAIN_MESSAGE, null,
-				new Object[] { "Play again", "Cancel" }, "Play again");
-		if (option == 0) {
-			play_options.setVisible(true);
-		}
-	}
-
-	public void showNewGameWarning() {
-		JOptionPane.showMessageDialog(null, "Start a new game after I made my move.\n", "Message",
-				JOptionPane.PLAIN_MESSAGE);
-	}
-
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		
@@ -571,6 +558,21 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 			System.exit(0);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 	}
+	
+	 public void gameEnded(int player){
+	       if(player == 2) showEndGameResult("Draw!");
+	       if(player == 0) showEndGameResult("White Wins!");
+	       if(player == 1) showEndGameResult("Black Wins!");
+	    }
+	 
+	    public void showEndGameResult(String message){
+	        int option = JOptionPane.showOptionDialog(null,
+	                message,"Game Over",0,JOptionPane.PLAIN_MESSAGE,
+	                null,new Object[]{"Play again","Cancel"},"Play again");
+	        if(option == 0){
+	            play_options.setVisible(true);
+	        }
+	    }
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {

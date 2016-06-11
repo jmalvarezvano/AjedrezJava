@@ -119,7 +119,7 @@ public class Tablero implements Cloneable {
 		Pieza[][] res = new Pieza[8][8];
 		for (int i = 0; i <= 7; i++) {			
 			for (int j = 0; j <= 7; j++)
-				res[i][j] = piezas[i][j];
+				res[i][j] = FabricaPiezas.getSingleton().clonar(piezas[i][j]);
 		}
 		return res;		
 	}
@@ -129,7 +129,12 @@ public class Tablero implements Cloneable {
 	}
 
 	public void getStateFromMemento(Memento Memento) {
-		piezas = Memento.getState().clone();
+		Pieza[][] state = Memento.getState().clone();
+		piezas = new Pieza[8][8];
+		for (int i = 0; i <= 7; i++) {			
+			for (int j = 0; j <= 7; j++)
+				piezas[i][j] = FabricaPiezas.getSingleton().clonar(state[i][j]);
+		}				
 	}
 	
 
