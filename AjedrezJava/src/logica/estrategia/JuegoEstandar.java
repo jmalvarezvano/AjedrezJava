@@ -13,6 +13,7 @@ public class JuegoEstandar extends Mediador {
 	// comprueba el jaque despues de mover y deshace si es el caso o anima el
 	// movimiento
 	public boolean moverYAnimarPieza(Movimiento movimiento) {
+		Pieza origen = tablero.getPieza(movimiento.origenX, movimiento.origenY);
 		boolean seMueve = moverPieza(movimiento);
 		if (seMueve) {
 			actualizarJaques();
@@ -21,9 +22,15 @@ public class JuegoEstandar extends Mediador {
 				actualizarJaques();
 				return false;
 			}
+			interfaz.animarMovimiento(movimiento);
+			if (origen.getTipo() == Pieza.PAWN) {
+				if (movimiento.jugador == jugadores[0] && movimiento.destinoY == 7)
+					tablero.setPieza(movimiento.destinoX, movimiento.destinoY, promoverPeon(origen.getJugador()));
+				if (movimiento.jugador == jugadores[1] && movimiento.destinoY == 0)
+					tablero.setPieza(movimiento.destinoX, movimiento.destinoY, promoverPeon(origen.getJugador()));
+			}
 			Conserje.getSingleton().add(tablero.saveStateToMemento()); // guardar
 			// estado
-			interfaz.animarMovimiento(movimiento);
 			cambiarTurno();
 			actualizarJaqueInterfaz();
 			comprobarFinJuego(turno);
@@ -39,12 +46,6 @@ public class JuegoEstandar extends Mediador {
 		if (movimientoValidoSinJaque(movimiento)) {
 			tablero.quitarPieza(movimiento.origenX, movimiento.origenY);
 			tablero.setPieza(movimiento.destinoX, movimiento.destinoY, origen);
-			if (origen.getTipo() == Pieza.PAWN) {
-				if (movimiento.jugador == jugadores[0] && movimiento.destinoY == 7)
-					tablero.setPieza(movimiento.destinoX, movimiento.destinoY, promoverPeon(origen.getJugador()));
-				if (movimiento.jugador == jugadores[1] && movimiento.destinoY == 0)
-					tablero.setPieza(movimiento.destinoX, movimiento.destinoY, promoverPeon(origen.getJugador()));
-			}
 			if (origen.getTipo() == Pieza.PAWN && ((Peon) origen).isPrimerMovimiento()) {
 				((Peon) origen).setPrimerMovimiento(false);
 			}
