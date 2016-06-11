@@ -207,7 +207,7 @@ public class JuegoEstandar extends Mediador {
 			return false;
 		if (xRelativo > 1)
 			return false;
-
+		if(xRelativo == 0 && tablero.getPieza(movimiento.destinoX, movimiento.destinoY) != null) return false;
 		yRelativo = movimiento.destinoY - movimiento.origenY;
 		if (((Peon) tablero.getPieza(movimiento.origenX, movimiento.origenY)).isPrimerMovimiento()) {
 			if (tablero.getPieza(movimiento.origenX, movimiento.origenY).getJugador().equals(getJugador1())) {
@@ -264,13 +264,22 @@ public class JuegoEstandar extends Mediador {
 	private boolean esMovimientoValidoTorre(Movimiento movimiento) {
 		int xRelativo = Math.abs(movimiento.destinoX - movimiento.origenX);
 		int yRelativo = Math.abs(movimiento.destinoY - movimiento.origenY);
-		if (xRelativo == 0) {
-			for (int y = movimiento.origenY + 1; y < movimiento.destinoY; y++)
+		
+		
+		int incrementoX = 0;
+		int incrementoY = 0;
+		
+		if (xRelativo == 0) {		
+			for (int y = movimiento.origenY + incrementoY; y != movimiento.destinoY; y = y + incrementoY)
 				if (tablero.getPieza(movimiento.origenX, y) != null)
 					return false;
 			return true;
-		} else if (yRelativo == 0) {
-			for (int x = movimiento.origenX + 1; x < movimiento.destinoX; x++)
+		} else if (yRelativo == 0) {		
+			if (movimiento.destinoY > movimiento.origenY)
+				incrementoY = 1;
+			else
+				incrementoY = -1;
+			for (int x = movimiento.origenX + incrementoX; x != movimiento.destinoX; x = x + incrementoX)
 				if (tablero.getPieza(x, movimiento.origenY) != null)
 					return false;
 			return true;
