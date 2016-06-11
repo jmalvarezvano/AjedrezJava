@@ -34,7 +34,7 @@ public class JuegoEstandar extends Mediador {
 	}
 
 	// muevue sin comprobar jaque ni cambiar turno
-	private boolean moverPieza(Movimiento movimiento) {
+	protected boolean moverPieza(Movimiento movimiento) {
 		Pieza origen = tablero.getPieza(movimiento.origenX, movimiento.origenY);
 		if (movimientoValidoSinJaque(movimiento)) {
 			tablero.quitarPieza(movimiento.origenX, movimiento.origenY);
@@ -261,13 +261,6 @@ public class JuegoEstandar extends Mediador {
 		int xRelativo = Math.abs(movimiento.destinoX - movimiento.origenX);
 		int yRelativo = Math.abs(movimiento.destinoY - movimiento.origenY);
 
-		// Rey rey = (Rey) tablero.getPieza(movimiento.origenX,
-		// movimiento.origenY);
-		// if (rey.isJaque()) {
-		// if
-		// (rey.getCeldasDefendidasPorRival()[movimiento.destinoX][movimiento.destinoY])
-		// return false;
-		// }
 		if (xRelativo <= 1 && yRelativo <= 1)
 			return true;
 		return false;
@@ -294,19 +287,17 @@ public class JuegoEstandar extends Mediador {
 		return false;
 	}
 
-	private boolean comprobarFinJuego(int jugador) {
+	protected boolean comprobarFinJuego(int jugador) {
 		boolean esJaque = jugadores[jugador].esJaque();
 		boolean esAhogado = comprobarAhogado(jugadores[jugador]);
 		if(esJaque && esAhogado) interfaz.gameEnded(Math.abs(jugador-1));
-		if(!esJaque && esAhogado) interfaz.gameEnded(Math.abs(2));
-		
-		return esAhogado;
-		  
+		if(!esJaque && esAhogado) interfaz.gameEnded(Math.abs(2));		
+		return esAhogado;		  
 	}
 
 	// busca si al jugador que se le pasa le quendan movimientos legales
 	// devuelve true si esta ahogado
-	private boolean comprobarAhogado(Jugador jugador) {
+	protected boolean comprobarAhogado(Jugador jugador) {
 		Pieza pieza = null;
 		for (int i = 0; i <= 7; i++)
 			for (int j = 0; j <= 7; j++) {
@@ -467,9 +458,4 @@ public class JuegoEstandar extends Mediador {
 	public void inicializarTablero() {
 		tablero.inicializarTableroEstandar(jugadores[0], jugadores[1]);
 	}
-
-	public boolean finJuego() {
-		return false;
-	}
-
 }

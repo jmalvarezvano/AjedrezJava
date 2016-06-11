@@ -47,7 +47,7 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 	Color bg_color = Color.decode("#efd39c");
 
 	public MainPane() {
-		super("Ajedrez Proyecto DDS");
+		super("Proyecto DDS");
 		setContentPane(main_pane);
 
 		System.out.println(mediador);
@@ -506,7 +506,6 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 				images.put(images_keys[i] + 10, ImageIO.read(resource.getResource("w" + resource_keys[i] + '2')));
 				images.put(-images_keys[i] + 10, ImageIO.read(resource.getResource("b" + resource_keys[i] + '2')));
 			}
-
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -523,7 +522,6 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 			images.put(GameData.HISTORY_TITLE, ImageIO.read(resource.getResource("history_title")));
 			images.put(GameData.TURN, ImageIO.read(resource.getResource("turn")));
 			images.put(GameData.TITLE, ImageIO.read(resource.getResource("title")));
-
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -605,10 +603,8 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 					JOptionPane.showMessageDialog(null, e.getStackTrace());
 					e.printStackTrace();
 				}
-
 			}
 		});
-
 	}
 
 	public int promoverPeon(boolean esBlanco) {

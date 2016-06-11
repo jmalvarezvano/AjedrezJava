@@ -9,6 +9,8 @@ import javax.swing.*;
 
 import logica.estrategia.Damas;
 import logica.estrategia.JuegoEstandar;
+import logica.estrategia.JuegoInvertido;
+import logica.estrategia.SinPrisioneros;
 import logica.recuerdo.Conserje;
 
 import java.awt.*;
@@ -23,6 +25,7 @@ public class PreferencesPane extends JFrame implements ActionListener {
 	JRadioButton clasico;
 	JRadioButton invertido;
 	JRadioButton damas;
+	JRadioButton sinPrisioneros;
 	JButton ok;
 	JButton cancel;
 	MainPane chessmate;
@@ -48,15 +51,20 @@ public class PreferencesPane extends JFrame implements ActionListener {
 		clasico = new JRadioButton("Classic Chess", true);
 		invertido = new JRadioButton("Inverted Chess");
 		damas = new JRadioButton("Checkers");
+		sinPrisioneros = new JRadioButton("No Prisoners Chess");
+
 
 		ButtonGroup group = new ButtonGroup();
 		group.add(clasico);
 		group.add(invertido);
 		group.add(damas);
+		group.add(sinPrisioneros);
 
 		colorPane.add(clasico);
 		colorPane.add(invertido);
 		colorPane.add(damas);
+		colorPane.add(sinPrisioneros);
+
 
 		colorPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5),
 				BorderFactory.createTitledBorder("Game mode")));
@@ -78,10 +86,12 @@ public class PreferencesPane extends JFrame implements ActionListener {
 		if (e.getSource() == ok) {
 			if (clasico.isSelected())
 				chessmate.newGame(new JuegoEstandar());
-			if (invertido.isSelected())
-				chessmate.newGame(new JuegoEstandar()); //cambiar por la clase correcta
+			if (sinPrisioneros.isSelected())
+				chessmate.newGame(new SinPrisioneros()); 
 			if (damas.isSelected())
-				chessmate.newGame(new Damas()); //cambiar por la clase correcta
+				chessmate.newGame(new Damas()); 
+			if (invertido.isSelected())
+				chessmate.newGame(new JuegoInvertido()); 
 
 		}
 		setVisible(false);

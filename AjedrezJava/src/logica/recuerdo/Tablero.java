@@ -17,25 +17,22 @@ public class Tablero implements Cloneable {
 	}
 		
 	public int[] getPosRey(Jugador jugador) {
-		int[] res = new int[2];
+		int[] res = null;
 		for (int i = 0; i < 8; i++)
 			for (int j = 0; j < 8; j++) 
 				if(piezas[i][j] != null && piezas[i][j].getTipo() == Pieza.KING && piezas[i][j].getJugador().equals(jugador)) {
+					res = new int[2];
 					res[0] = i;
 					res[1] = j;
 					return res;
 				}
-		return res;
+		return null;
 	}
 
 	public void inicializarTableroEstandar(Jugador j1, Jugador j2) {
 
 		piezas = new Pieza[8][8];
 		
-//		for (int i = 0; i < 8; i++)
-//			for (int j = 0; j < 8; j++)
-//				piezas[i][j] = new Pieza();
-
 		piezas[0][0] = fabricaPiezas.crear("torre", j1);
 		piezas[0][7] = fabricaPiezas.crear("torre", j2);
 		piezas[7][0] = fabricaPiezas.crear("torre", j1);
@@ -135,8 +132,7 @@ public class Tablero implements Cloneable {
 			for (int j = 0; j <= 7; j++)
 				piezas[i][j] = FabricaPiezas.getSingleton().clonar(state[i][j]);
 		}				
-	}
-	
+	}	
 
 	public Mediador getMediador() {
 		return mediador;

@@ -22,10 +22,11 @@ public class AboutPane extends JPanel{
         c.fill = GridBagConstraints.HORIZONTAL;        
 
         String[][] values = new String[][]{
-            {"Project","MyChessmate "},
+            {"Project","Proyecto DDS "},
             {"Category","Game"},
-            {"Author","Melvic C. YbaÃ±ez"},
-            {"Date created","June 2011"}
+            {"Authors","José Miguel Álvarez Vañó, Daniel Ionel Bizau, Álvaro Morro Ibáñez"},
+            {"Date created","May-June 2016"},
+            {"Other info","Base interface layout reused from MyChessmate Project by Melvic C. YbaÃ±ez"}
         };
         for(int i=0; i<values.length; i++){
             JLabel header = new JLabel(values[i][0]+": ");
@@ -55,7 +56,7 @@ public class AboutPane extends JPanel{
     }
     class NorthPane extends JPanel{
         NorthPane(){          
-            JLabel label = new JLabel("About MyChessmate",JLabel.LEFT);
+            JLabel label = new JLabel("About this project",JLabel.LEFT);
             label.setFont(new Font(label.getFont().getName(),Font.BOLD,15));
             label.setForeground(Color.decode("#9900AF"));
             add(label);
