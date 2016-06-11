@@ -269,16 +269,20 @@ public class JuegoEstandar extends Mediador {
 		int incrementoX = 0;
 		int incrementoY = 0;
 		
-		if (xRelativo == 0) {		
+		if (xRelativo == 0) {	
+			if (movimiento.destinoY > movimiento.origenY)
+				incrementoY = 1;
+			else
+				incrementoY = -1;
 			for (int y = movimiento.origenY + incrementoY; y != movimiento.destinoY; y = y + incrementoY)
 				if (tablero.getPieza(movimiento.origenX, y) != null)
 					return false;
 			return true;
 		} else if (yRelativo == 0) {		
-			if (movimiento.destinoY > movimiento.origenY)
-				incrementoY = 1;
+			if (movimiento.destinoX > movimiento.origenX)
+				incrementoX = 1;
 			else
-				incrementoY = -1;
+				incrementoX = -1;
 			for (int x = movimiento.origenX + incrementoX; x != movimiento.destinoX; x = x + incrementoX)
 				if (tablero.getPieza(x, movimiento.origenY) != null)
 					return false;
