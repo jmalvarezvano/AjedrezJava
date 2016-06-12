@@ -8,7 +8,7 @@ import logica.piezas.Pieza;
 import logica.piezas.Rey;
 import logica.recuerdo.Conserje;
 
-public class JuegoEstandar extends Mediador {
+public class JuegoEstandar extends Estrategia {
 
 	// comprueba el jaque despues de mover y deshace si es el caso o anima el
 	// movimiento
@@ -126,27 +126,8 @@ public class JuegoEstandar extends Mediador {
 
 	private Pieza promoverPeon(Jugador jugador) {
 		boolean esBlanco = jugador.equals(jugadores[0]);
-		int tipoNuevaPieza = interfaz.promoverPeon(esBlanco);
-		Pieza nuevaPieza = null;
-		/*
-		 * cambiando la fabrica para que funcione con tipos de piezas en lugar
-		 * de string se puede evitar este switch
-		 */
-		switch (tipoNuevaPieza) {
-		case Pieza.BISHOP:
-			nuevaPieza = FabricaPiezas.getSingleton().crear("alfil", jugador);
-			break;
-		case Pieza.KNIGHT:
-			nuevaPieza = FabricaPiezas.getSingleton().crear("caballo", jugador);
-			break;
-		case Pieza.QUEEN:
-			nuevaPieza = FabricaPiezas.getSingleton().crear("reina", jugador);
-			break;
-		case Pieza.ROOK:
-			nuevaPieza = FabricaPiezas.getSingleton().crear("torre", jugador);
-			break;
-		}
-		return nuevaPieza;
+		int tipoNuevaPieza = interfaz.promoverPeon(esBlanco);		
+		return FabricaPiezas.getSingleton().crear(tipoNuevaPieza, jugador);
 	}
 
 	private boolean movimientoValidoTipoPieza(Movimiento movimiento, int tipoPieza) {

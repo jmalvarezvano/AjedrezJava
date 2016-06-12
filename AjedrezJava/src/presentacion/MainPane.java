@@ -15,25 +15,21 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.imageio.ImageIO;
 
 import logica.Jugador;
 import logica.Movimiento;
-import logica.Observer;
 import logica.estrategia.Damas;
-import logica.estrategia.Mediador;
+import logica.estrategia.Estrategia;
 import logica.piezas.Pieza;
 import logica.recuerdo.Conserje;
 
 
-public class MainPane extends JFrame implements MouseListener, Observer {
+public class MainPane extends JFrame implements MouseListener {
 	ChessBoardPane board_pane;
 	HistoryBoardPane history_pane;
-	Mediador mediador;
+	Estrategia mediador;
 	JPanel east_pane;
 	Resource resource = new Resource();
 	Jugador turno;
@@ -138,7 +134,7 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 		last.addMouseListener(this);
 	}
 
-	public void newGame(Mediador mediador) {
+	public void newGame(Estrategia mediador) {
 		this.mediador = mediador;
 		mediador.setInterfaz(this);
 		if (mediador instanceof Damas)

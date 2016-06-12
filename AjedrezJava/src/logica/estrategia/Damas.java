@@ -5,7 +5,7 @@ import logica.Movimiento;
 import logica.piezas.Pieza;
 import logica.recuerdo.Conserje;
 
-public class Damas extends Mediador {
+public class Damas extends Estrategia {
 	
 	private int turnos;
 	private boolean esFin;
@@ -43,7 +43,7 @@ public class Damas extends Mediador {
 
 			// promover si es el caso
 			if (movimiento.destinoY == 7 || movimiento.destinoY == 0) {
-				Pieza rey = FabricaPiezas.getSingleton().crear("reydamas", origen.getJugador());
+				Pieza rey = FabricaPiezas.getSingleton().crear(Pieza.CHECKERS_KING, origen.getJugador());
 				tablero.setPieza(movimiento.destinoX, movimiento.destinoY, rey);
 			} else
 				tablero.setPieza(movimiento.destinoX, movimiento.destinoY, origen);
