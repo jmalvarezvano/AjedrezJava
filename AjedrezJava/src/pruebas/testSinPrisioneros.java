@@ -1,5 +1,5 @@
 package pruebas;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -42,9 +42,10 @@ public class testSinPrisioneros {
 		Conserje c = Conserje.getSingleton();
 		c.add(m);
 		
-		//mover rey de j1 a posicion de jaque
-		boolean res = sp.moverYAnimarPieza(new Movimiento(0,6,0,7,j1));
-		assertTrue(res);
+		sp.cambiarTurno(1);
+		//la partida termina si se mata al rey
+		assertTrue(sp.moverYAnimarPieza(new Movimiento(1,5,0,6,j2)));
+		assertEquals(r2,t.getPieza(0, 6));
 		
 		
 			

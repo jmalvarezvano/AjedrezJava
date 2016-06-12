@@ -24,10 +24,11 @@ public class MockSinPrisioneros extends MockJuegoEstandar{
 			if (destinoEsRey) {
 				//interfaz.gameEnded(turno);
 				esFin = true;
+				return true;
 			}
 			else
 				cambiarTurno();
 		}
-		return seMueve;
+		return false;
 	}
 }
