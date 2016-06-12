@@ -44,7 +44,9 @@ public class FabricaPiezas extends Fabrica {
 		case Pieza.KNIGHT:
 			return new Caballo(pieza.getJugador());
 		case Pieza.PAWN:
-			return new Peon(pieza.getJugador());
+			   Peon p = new Peon(pieza.getJugador());
+			   p.setPrimerMovimiento(((Peon) pieza).isPrimerMovimiento());
+			   return p;
 		case Pieza.QUEEN:
 			return new Reina(pieza.getJugador());
 		case Pieza.KING:

@@ -1,5 +1,6 @@
 package logica.recuerdo;
 
+
 import logica.Fabrica;
 import logica.FabricaPiezas;
 import logica.Jugador;
@@ -17,43 +18,64 @@ public class Tablero implements Cloneable {
 	}
 		
 	public int[] getPosRey(Jugador jugador) {
-		int[] res = null;
+		int[] res = new int[2];
 		for (int i = 0; i < 8; i++)
 			for (int j = 0; j < 8; j++) 
 				if(piezas[i][j] != null && piezas[i][j].getTipo() == Pieza.KING && piezas[i][j].getJugador().equals(jugador)) {
-					res = new int[2];
 					res[0] = i;
 					res[1] = j;
 					return res;
 				}
-		return null;
+		return res;
 	}
 
 	public void inicializarTableroEstandar(Jugador j1, Jugador j2) {
 
 		piezas = new Pieza[8][8];
 		
+//		for (int i = 0; i < 8; i++)
+//			for (int j = 0; j < 8; j++)
+//				piezas[i][j] = new Pieza();
+
+		
 		piezas[0][0] = fabricaPiezas.crear("torre", j1);
+		j1.addPieza(piezas[0][0]);
 		piezas[0][7] = fabricaPiezas.crear("torre", j2);
+		j2.addPieza(piezas[0][7]);
 		piezas[7][0] = fabricaPiezas.crear("torre", j1);
+		j1.addPieza(piezas[7][0]);
 		piezas[7][7] = fabricaPiezas.crear("torre", j2);
+		j1.addPieza(piezas[7][7]);
 		piezas[4][0] = fabricaPiezas.crear("rey", j1);
+		j1.addPieza(piezas[4][0]);
 		piezas[4][7] = fabricaPiezas.crear("rey", j2);
+		j2.addPieza(piezas[4][7]);
 		piezas[3][0] = fabricaPiezas.crear("reina", j1);
+		j1.addPieza(piezas[3][0]);
 		piezas[3][7] = fabricaPiezas.crear("reina", j2);
+		j2.addPieza(piezas[3][7]);
 		for (int i = 0; i < 8; i++) {
 			piezas[i][1] = fabricaPiezas.crear("peon", j1);
+			j1.addPieza(piezas[i][1]);
 			piezas[i][6] = fabricaPiezas.crear("peon", j2);
+			j1.addPieza(piezas[i][6]);
 		}
 		piezas[1][0] = fabricaPiezas.crear("caballo", j1);
+		j1.addPieza(piezas[1][0]);
 		piezas[6][0] = fabricaPiezas.crear("caballo", j1);
+		j1.addPieza(piezas[6][0]);
 		piezas[1][7] = fabricaPiezas.crear("caballo", j2);
+		j2.addPieza(piezas[1][7]);
 		piezas[6][7] = fabricaPiezas.crear("caballo", j2);
+		j2.addPieza(piezas[6][7]);
 		piezas[2][0] = fabricaPiezas.crear("alfil", j1);
+		j1.addPieza(piezas[2][0]);
 		piezas[5][0] = fabricaPiezas.crear("alfil", j1);
+		j1.addPieza(piezas[5][0]);
 		piezas[2][7] = fabricaPiezas.crear("alfil", j2);
+		j2.addPieza(piezas[2][7]);
 		piezas[5][7] = fabricaPiezas.crear("alfil", j2);
-		
+		j1.addPieza(piezas[5][7]);
 		Conserje.getSingleton().add(this.saveStateToMemento());
 	}
 
@@ -81,6 +103,7 @@ public class Tablero implements Cloneable {
 	// toString para pruebas en consola
 	@Override
 	public String toString() {
+		System.out.println("Mostrando Tablero");
 		String out = new String();
 		for (int i = 7; i >= 0; i--) {
 			out += "\n" + i;
@@ -132,7 +155,8 @@ public class Tablero implements Cloneable {
 			for (int j = 0; j <= 7; j++)
 				piezas[i][j] = FabricaPiezas.getSingleton().clonar(state[i][j]);
 		}				
-	}	
+	}
+	
 
 	public Mediador getMediador() {
 		return mediador;

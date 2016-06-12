@@ -27,7 +27,9 @@ public class Conserje {
 	}
 	
 	public Memento getLast() {
-		return mementoList.get(mementoList.size()-1);
+		if(mementoList.size() >= 1){
+			return mementoList.get(mementoList.size()-1);
+		}return null;
 	}
 	
 	public int numEstadosGuardados() {

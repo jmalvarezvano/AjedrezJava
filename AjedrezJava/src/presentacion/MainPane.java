@@ -51,7 +51,7 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 		setContentPane(main_pane);
 		loadMenuIcons();
 		loadBoardImages();
-
+		
 		board_pane = new ChessBoardPane();
 
 		main_pane.add(createMenuPane(), BorderLayout.WEST);
@@ -59,7 +59,6 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 		main_pane.setBackground(bg_color);
 		createEastPane();
 		pack();
-
 		Dimension size = getSize();
 		size.height = 523;
 		setSize(size);
@@ -603,4 +602,8 @@ public class MainPane extends JFrame implements MouseListener, Observer {
 		return promotion_pane.showDialog();
 	}
 
+	public JPanel getMainPane(){
+		return main_pane;
+	}
+	
 }
