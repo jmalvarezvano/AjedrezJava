@@ -6,7 +6,7 @@ import logica.Jugador;
 import logica.estrategia.Estrategia;
 import logica.piezas.Pieza;
 
-public class Tablero implements Cloneable {
+public class Tablero {
 	private Pieza[][] piezas;
 	private Estrategia mediador;
 	Fabrica fabricaPiezas;
@@ -115,7 +115,9 @@ public class Tablero implements Cloneable {
 		Pieza[][] res = new Pieza[8][8];
 		for (int i = 0; i <= 7; i++) {			
 			for (int j = 0; j <= 7; j++)
+				if(piezas[i][j] != null && piezas[i][j].getTipo() == Pieza.PAWN)
 				res[i][j] = FabricaPiezas.getSingleton().crear(piezas[i][j]);
+				else res[i][j] = piezas[i][j];
 		}
 		return res;		
 	}
@@ -129,7 +131,10 @@ public class Tablero implements Cloneable {
 		piezas = new Pieza[8][8];
 		for (int i = 0; i <= 7; i++) {			
 			for (int j = 0; j <= 7; j++)
-				piezas[i][j] = FabricaPiezas.getSingleton().crear(state[i][j]);
+				//clona el peon para conservar "primerMovimiento"
+				if(state[i][j] != null && state[i][j].getTipo() == Pieza.PAWN)
+					piezas[i][j] = FabricaPiezas.getSingleton().crear(state[i][j]);
+					else piezas[i][j] = state[i][j];
 		}				
 	}	
 
