@@ -29,10 +29,12 @@ public class JuegoEstandar extends Estrategia {
 				if (movimiento.jugador == jugadores[1] && movimiento.destinoY == 0)
 					tablero.setPieza(movimiento.destinoX, movimiento.destinoY, promoverPeon(origen.getJugador()));
 			}
-			Conserje.getSingleton().add(tablero.saveStateToMemento()); // guardar
-			// estado
+			Conserje.getSingleton().add(tablero.saveStateToMemento()); // guardar estado
 			cambiarTurno();
-			actualizarJaqueInterfaz();
+			
+			//actualizar jaque interfaz
+			interfaz.setJaqueJ1(jugadores[0].esJaque());
+			interfaz.setJaqueJ2(jugadores[1].esJaque());			
 			comprobarFinJuego(turno);
 			return true;
 		}
@@ -120,8 +122,7 @@ public class JuegoEstandar extends Estrategia {
 	}
 
 	private void actualizarJaqueInterfaz() {
-		interfaz.setJaqueJ1(jugadores[0].esJaque());
-		interfaz.setJaqueJ2(jugadores[1].esJaque());
+		
 	}
 
 	private Pieza promoverPeon(Jugador jugador) {
